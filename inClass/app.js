@@ -49,7 +49,17 @@ decideButton.onclick = function () {
 
 fetch("url").then(function(response) {
 
+  console.log("server responded.");
+  response.json().then(function(data) {
+    console.log("data received from server: ", data);
+    //data is ready to use (mine is an array of objects)
+    LUNCHPLACES = data;
 
+    //alternative loop over the data and display it immediately
+    LUNCHPLACES.forEach(function(place) {
+      // append each place to anew element in the DOM
+    });
+  )};
 
 
 });
