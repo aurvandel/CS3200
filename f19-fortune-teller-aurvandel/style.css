@@ -1,0 +1,64 @@
+/*Color Scheme
+ a2bfcf 
+ bad1d9
+ faf9e5
+ 86a6b3
+ c8beb9
+ */
+
+body {
+  background-image: url("background.jpg");  
+}
+
+#description {
+  margin: 0px 50px 25px;
+  color: #092834;
+	text-align: justify;
+}
+
+#bannerDiv {
+  position: relative;
+  text-align: center;
+  color: #7a8b99;
+}
+
+#bannerText {
+  margin-top: 40px;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.column {
+
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#boyButton {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	background-color: #86a6b3;
+}
+
+#boyButton:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#girlButton {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	background-color: #c8bfb9;
+}
+
+#girlButton:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
