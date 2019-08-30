@@ -1,3 +1,4 @@
+name,gender,n
 Emma,F,20936
 Olivia,F,19807
 Sophia,F,18609

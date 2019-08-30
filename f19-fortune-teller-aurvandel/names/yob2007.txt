@@ -1,3 +1,4 @@
+name,gender,n
 Emily,F,19355
 Isabella,F,19139
 Emma,F,18373

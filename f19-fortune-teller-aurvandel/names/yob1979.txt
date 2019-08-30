@@ -1,3 +1,4 @@
+name,gender,n
 Jennifer,F,56717
 Melissa,F,34052
 Amanda,F,31928

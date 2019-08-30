@@ -1,3 +1,4 @@
+name,gender,n
 Jennifer,F,63603
 Michelle,F,29284
 Lisa,F,27549

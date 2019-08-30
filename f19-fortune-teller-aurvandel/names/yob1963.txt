@@ -1,3 +1,4 @@
+name,gender,n
 Lisa,F,56040
 Mary,F,41550
 Susan,F,33998

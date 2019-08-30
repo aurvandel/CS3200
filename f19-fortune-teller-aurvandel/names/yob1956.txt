@@ -1,3 +1,4 @@
+name,gender,n
 Mary,F,61756
 Debra,F,48302
 Linda,F,48075

@@ -1,3 +1,4 @@
+name,gender,n
 Mary,F,65838
 Helen,F,33706
 Dorothy,F,31734

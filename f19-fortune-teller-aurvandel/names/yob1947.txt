@@ -1,3 +1,4 @@
+name,gender,n
 Linda,F,99689
 Mary,F,71687
 Patricia,F,51279

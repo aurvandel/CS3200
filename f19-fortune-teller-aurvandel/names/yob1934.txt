@@ -1,3 +1,4 @@
+name,gender,n
 Mary,F,56929
 Betty,F,31085
 Barbara,F,29234

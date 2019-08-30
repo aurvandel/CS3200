@@ -1,3 +1,4 @@
+name,gender,n
 Emily,F,24464
 Madison,F,21773
 Hannah,F,18822

@@ -45,3 +45,11 @@ decideButton.onclick = function () {
 
   historyList.appendChild(newListItem);
 };
+
+
+fetch("url").then(function(response) {
+
+
+
+
+});

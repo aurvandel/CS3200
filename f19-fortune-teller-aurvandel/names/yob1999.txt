@@ -1,3 +1,4 @@
+name,gender,n
 Emily,F,26539
 Hannah,F,21676
 Alexis,F,19234
