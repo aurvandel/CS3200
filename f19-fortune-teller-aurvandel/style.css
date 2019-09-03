@@ -23,7 +23,7 @@ body {
 
 #description {
   font-size: 1em;
-  margin: 0px 50px 25px;
+  margin: 0 50px 25px;
   color: #092834;
 	text-align: justify;
 }
@@ -47,6 +47,7 @@ body {
 .column {
   float: left;
   width: 50%;
+
 }
 
 /* Clear floats after the columns */
@@ -70,7 +71,7 @@ body {
 
 #girlButton {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-	background-color: #c8bfb9;
+	background-color: pink;
   font-size: 2em;
   padding: 1px 40px;
 }
@@ -89,4 +90,19 @@ body {
   padding-top: 20px;
   color: #383f42;
   font-size: 2em;
+}
+
+#girlNameList {
+  position: fixed;
+  left: 59%;
+
+}
+
+#boyNameList {
+  position: fixed;
+  left: 33%;
+}
+
+li {
+  list-style-type: none;
 }
