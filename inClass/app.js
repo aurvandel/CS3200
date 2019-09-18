@@ -70,11 +70,17 @@ var addButton = document.querySelector("#add");
 
 addButon.onclick = function () {
   // inputField.value to get whatever was typed into field
-  var body = "name=Outback"
+  var newRestaurantInput = document.querySelector("#new-restaurant");
+  var newRestaurant = newRestaurantInput.value;
+  
+  var body = "name=" + encodeURIComponent(newRestaurant);  //encodes any special characters
+  
   fetch("http://localhost:8080/restaurants", {
     method: "POST",
     body: body,
-    headers: {}
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
   }).then(function (response) {
     console.log("server responded")
   });

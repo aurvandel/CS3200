@@ -36,7 +36,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
             # TODO: parse body into dict using parse_qs()
-            parsed_body = parse_qs(body)
+            parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
             RESTAURANTS.append(name)
 
