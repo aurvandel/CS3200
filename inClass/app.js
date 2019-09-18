@@ -63,3 +63,19 @@ fetch("url").then(function(response) {
 
 
 });
+
+
+
+var addButton = document.querySelector("#add");
+
+addButon.onclick = function () {
+  // inputField.value to get whatever was typed into field
+  var body = "name=Outback"
+  fetch("http://localhost:8080/restaurants", {
+    method: "POST",
+    body: body,
+    headers: {}
+  }).then(function (response) {
+    console.log("server responded")
+  });
+};
