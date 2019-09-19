@@ -1,12 +1,9 @@
 // TODO: Get the entire list changed for uploading
 
-var boyNamesURL = "https://api.myjson.com/bins/brlyf"
-var girlNamesURL = "https://api.myjson.com/bins/do73b"
-
+var boyNamesURL = "https://api.jsonbin.io/b/5d7124e68ea2fe6d64eeb096/13";
+var girlNamesURL = "https://api.jsonbin.io/b/5d712c91fc5937640ce44c04/4";
 var boyNames = [];
 var girlNames = [];
-
-var BOY_COUNT = 0;
 
 // query buttons
 var boyButton = document.querySelector("#boyButton");
@@ -17,31 +14,25 @@ var boyPick = document.querySelector("#boyName");
 var girlPick = document.querySelector("#girlName")
 
 
+
 boyButton.onclick = function () {
-	BOY_COUNT++;
-	var randomBoy = Math.floor(Math.random() * boyNames.length)
-	boyPick.innerHTML = boyNames[randomBoy].name;
+  var btn = document.createElement("BUTTON");
+  btn.id = "boyAdd";
+  var randomBoy = Math.floor(Math.random() * boyNames.length)
+  boyPick.innerHTML = boyNames[randomBoy].name;
+  boyPick.prepend(btn);
 
-    // Place in history list
-    var boyHistoryList = document.querySelector("#boyNameList");
-    var newBoyListItem = document.createElement("li");
-    newBoyListItem.innerHTML = boyNames[randomBoy].name;
-    boyHistoryList.appendChild(newBoyListItem);
 
-		// Remove first element from list if there are more than 10
-
-		if (BOY_COUNT >= 10) {
-			console.log(BOY_COUNT);
-			var boyLI = document.getElementById("#boyNameList");
-			boyLI.parentNode.removeChild(boyLI);
-			BOY_COUNT--;
-		}
-
+  // Place in history list
+  var boyHistoryList = document.querySelector("#boyNameList");
+  var newBoyListItem = document.createElement("li");
+  newBoyListItem.innerHTML = boyNames[randomBoy].name;
+  boyHistoryList.appendChild(newBoyListItem);
 };
 
 girlButton.onclick = function () {
-	var randomGirl = Math.floor(Math.random() * girlNames.length)
-	girlPick.innerHTML = girlNames[randomGirl].name;
+    var randomGirl = Math.floor(Math.random() * girlNames.length)
+    girlPick.innerHTML = girlNames[randomGirl].name;
 
     // place in history list
     var girlHistoryList = document.querySelector("#girlNameList");
@@ -70,3 +61,19 @@ fetch(girlNamesURL).then(function (response) {
     girlNames = data;
     });
   });
+
+
+// functions to delete names from list
+document.querySelector("#boyNameList").addEventListener("click",function(item) {
+  var tgt = item.target;
+  if (tgt.tagName.toUpperCase() == "LI") {
+    tgt.parentNode.removeChild(tgt);
+  }
+});
+
+document.querySelector("#girlNameList").addEventListener("click",function(item) {
+  var tgt = item.target;
+  if (tgt.tagName.toUpperCase() == "LI") {
+    tgt.parentNode.removeChild(tgt);
+  }
+});
