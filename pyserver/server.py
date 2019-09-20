@@ -4,7 +4,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
 
-RESTAURANTS = ["Red Lobster", "Hu Hot"]
+BOYS = []
+GIRLS = []
+
+def fileToJSON(fileName, nameList):
+    with open(fileName) as json_file:
+        data = json.load(json_file)
+        for p in data:
+            nameList.append(p)
+
+
+fileToJSON('boys.json', BOYS)
+fileToJSON('girls.json', GIRLS)
+
 
 
 class MyRequestHandler(BaseHTTPRequestHandler):
@@ -12,7 +24,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print("The PATH is:", self.path )
 
-        if self.path == "/restaurants":
+        if self.path == "/boyNames":
+            # send_response(status code, )
+            self.send_response(200)
+            # send the header data send_header(key, value)
+            self.send_header("Content-Type", "application/json")
+            # have to call end_headers to finish the response
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            # send body
+            self.wfile.write(bytes(json.dumps(RESTAURANTS), "utf-8"))
+
+        if self.path == "/girlNames":
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -30,7 +53,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             # TODO: Add body to send
 
     def do_POST(self):
-        if self.path == "/restaurants":
+        if self.path == "/names":
             length = self.headers["Content-Length"]
 
             # read the body (data)

@@ -43,7 +43,7 @@ girlButton.onclick = function () {
 
 
 // request the data from the server for the boy names:
-fetch(boyNamesURL).then(function (response) {
+fetch("http://localhost:8080/boyNames").then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)
@@ -53,7 +53,7 @@ fetch(boyNamesURL).then(function (response) {
   });
 
 // request the data from the server for the boy names:
-fetch(girlNamesURL).then(function (response) {
+fetch("http://localhost:8080/girlNames").then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)

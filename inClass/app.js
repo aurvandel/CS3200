@@ -72,9 +72,9 @@ addButon.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newRestaurantInput = document.querySelector("#new-restaurant");
   var newRestaurant = newRestaurantInput.value;
-  
+
   var body = "name=" + encodeURIComponent(newRestaurant);  //encodes any special characters
-  
+
   fetch("http://localhost:8080/restaurants", {
     method: "POST",
     body: body,
@@ -83,5 +83,6 @@ addButon.onclick = function () {
     }
   }).then(function (response) {
     console.log("server responded")
+    // call function to do the GET request
   });
 };
