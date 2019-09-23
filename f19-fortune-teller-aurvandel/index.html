@@ -8,27 +8,50 @@
   </head>
   <body>
     <div id="centerViewPort">
-      <div id="bannerDiv">
-        <div id="bannerText">Baby Name Generator</div>
-        <p id="description">If you're anything like me you have a lot of trouble coming up with good baby names.
-        So I created a list of the top baby names of 2018. Just click boy or girl for a list of random names.
-        Hopefully you will find something you like! If you see a name you like click to add it to your personal list.
-    </p>
-        <div id="row">
-          <div class="column">
-            <button id="boyButton">&#x2642;</button>
-            <div id="boyName"></div>
-            <ul id="boyNameList"></ul>
-          </div>
-          <div class="column">
-            <button id="girlButton">&#x2640;</button>
-            <div id="girlName"></div>
-            <ul id="girlNameList"></ul>
+        <div id="bannerDiv">
+          <div id="bannerText">Baby Name Generator</div>
+          <p id="description">If you're anything like me you have a lot of trouble coming up with good baby names.
+            So I created a list of the top baby names of 2018. Just click boy or girl for a list of random names.
+            Hopefully you will find something you like! If you see a name you like click to add it to your personal list.
+            I've already added the top 10 names to your list.
+          </p>
+          <p>Feel free to add a name to our lists</p>
+          <div id="row">
+            <div class="column">
+              <input type="text" id="newBoyName">
+              <button id="addBoyName">Add</button>
+              <br>
+
+              <button id="boyButton">&#x2642;</button>
+              <div id="boyName"></div>
+              <ul id="boyNameList"></ul>
+            </div>
+            <div class="column">
+              <input type="text" id="newGirlName">
+              <button id="addGirlName">Add</button>
+              <br>
+
+              <button id="girlButton">&#x2640;</button>
+              <div id="girlName"></div>
+              <ul id="girlNameList"></ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
+      <div id="slideoutBoy">
+        <span>Favorite Boy Names</span>
+        <div id="slideoutInnerBoy">
+          <ul id="favBoyList"></ul>
+        </div>
+      </div>
+
+      <div id="slideoutGirl">
+        <span>Favorite Girl Names</span>
+        <div id="slideoutInnerGirl">
+          <ul id="favGirlList"></ul>
+        </div>
+      </div>
 
     <script type="text/javascript" src="app.js"></script>
   </body>

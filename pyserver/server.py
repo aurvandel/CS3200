@@ -24,17 +24,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print("The PATH is:", self.path )
 
-        if self.path == "/boyNames":
-            # send_response(status code, )
-            self.send_response(200)
-            # send the header data send_header(key, value)
-            self.send_header("Content-Type", "application/json")
-            # have to call end_headers to finish the response
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            # send body
-            self.wfile.write(bytes(json.dumps(RESTAURANTS), "utf-8"))
-
         if self.path == "/girlNames":
             # send_response(status code, )
             self.send_response(200)
@@ -44,7 +33,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
-            self.wfile.write(bytes(json.dumps(RESTAURANTS), "utf-8"))
+            self.wfile.write(bytes(json.dumps(GIRLS), "utf-8"))
+
+        elif self.path == "/boyNames":
+            # send_response(status code, )
+            self.send_response(200)
+            # send the header data send_header(key, value)
+            self.send_header("Content-Type", "application/json")
+            # have to call end_headers to finish the response
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            # send body
+            self.wfile.write(bytes(json.dumps(BOYS), "utf-8"))
 
         else:
             #404
@@ -53,15 +53,14 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             # TODO: Add body to send
 
     def do_POST(self):
-        if self.path == "/names":
+        if self.path == "/boyNames":
             length = self.headers["Content-Length"]
 
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
-            # TODO: parse body into dict using parse_qs()
             parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
-            RESTAURANTS.append(name)
+            BOYS.append(name)
 
             # respond to the client
             self.send_response(201)

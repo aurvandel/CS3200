@@ -9,7 +9,7 @@
 #centerViewPort {
   padding: 25%;
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, -50%)
@@ -62,6 +62,7 @@ body {
 	background-color: #86a6b3;
   font-size: 2em;
   padding: 1px 40px;
+  margin-top: 20px;
 }
 
 #boyButton:hover {
@@ -74,9 +75,35 @@ body {
 	background-color: pink;
   font-size: 2em;
   padding: 1px 40px;
+  margin-top: 20px;
 }
 
 #girlButton:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+
+/* Add name button styling */
+#addBoyName {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	background-color: #86a6b3;
+  font-size: 1em;
+  padding: 1px 20px;
+}
+
+#addBoyName:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+}
+
+#addGirlName {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	background-color: pink;
+  font-size: 1em;
+  padding: 1px 20px;
+}
+
+#addGirlName:hover {
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
@@ -105,4 +132,101 @@ body {
 
 li {
   list-style-type: none;
+}
+
+/* Code for slide outs */
+#slideoutBoy {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 65px;
+  padding: 12px 0;
+  text-align: center;
+  background: #86a6b3;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-border-radius: 0 5px 5px 0;
+  -moz-border-radius: 0 5px 5px 0;
+  border-radius: 0 5px 5px 0;
+}
+
+#slideoutInnerBoy {
+  position: fixed;
+  top: 40px;
+  left: -150px;
+  background: #86a6b3;
+  width: 100px;
+  padding: 25px;
+  height: 400px;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  text-align: left;
+  -webkit-border-radius: 0 0 5px 0;
+  -moz-border-radius: 0 0 5px 0;
+  border-radius: 0 0 5px 0;
+}
+
+#favBoyList {
+  text-align: left;
+  padding-left: 10px;
+}
+
+#slideoutBoy:hover {
+  left: 150px;
+}
+
+#slideoutBoy:hover #slideoutInnerBoy {
+  left: 0;
+}
+
+#slideoutGirl {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  width: 65px;
+  padding: 12px 0;
+  text-align: center;
+  background: pink;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-border-radius: 5px 0 0 5px;
+  -moz-border-radius: 5px 0 0 5px;
+  border-radius: 5px 0 0 5px;
+}
+
+#slideoutInnerGirl {
+  position: fixed;
+  top: 40px;
+  right: -150px;
+  background: pink;
+  width: 100px;
+  padding: 25px;
+  height: 400px;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  text-align: left;
+  -webkit-border-radius: 0 0 0 5px;
+  -moz-border-radius: 0 0 0 5px;
+  border-radius: 0 0 0 5px;
+}
+
+#favGirlList {
+  text-align: right;
+  padding-right: 10px;
+}
+
+#slideoutGirl:hover {
+  right: 150px;
+}
+
+#slideoutGirl:hover #slideoutInnerGirl {
+  right: 0;
 }

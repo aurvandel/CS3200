@@ -1,7 +1,7 @@
 // TODO: Get the entire list changed for uploading
 
-var boyNamesURL = "https://api.jsonbin.io/b/5d7124e68ea2fe6d64eeb096/13";
-var girlNamesURL = "https://api.jsonbin.io/b/5d712c91fc5937640ce44c04/4";
+// var boyNamesURL = "https://api.jsonbin.io/b/5d7124e68ea2fe6d64eeb096/13";
+// var girlNamesURL = "https://api.jsonbin.io/b/5d712c91fc5937640ce44c04/4";
 var boyNames = [];
 var girlNames = [];
 
@@ -11,17 +11,15 @@ var girlButton = document.querySelector("#girlButton");
 
 // query tags for placing HTML
 var boyPick = document.querySelector("#boyName");
-var girlPick = document.querySelector("#girlName")
+var girlPick = document.querySelector("#girlName");
 
-
-
+// function to display names on button click
 boyButton.onclick = function () {
-  var btn = document.createElement("BUTTON");
-  btn.id = "boyAdd";
+  // var btn = document.createElement("BUTTON");
+  // btn.id = "boyAdd";
   var randomBoy = Math.floor(Math.random() * boyNames.length)
   boyPick.innerHTML = boyNames[randomBoy].name;
-  boyPick.prepend(btn);
-
+  // boyPick.prepend(btn);
 
   // Place in history list
   var boyHistoryList = document.querySelector("#boyNameList");
@@ -49,6 +47,16 @@ fetch("http://localhost:8080/boyNames").then(function (response) {
     // (data is a list of objects)
     // save the data for use later (when the button is clicked):
     boyNames = data;
+
+    // prepolulate list with top 10 names
+    var favBoy = document.querySelector("#favBoyList");
+    var i;
+    for (i = 0; i < 10; i++) {
+      var newTopBoy = document.createElement("li");
+      newTopBoy.innerHTML = boyNames[i].name;
+      favBoy.appendChild(newTopBoy);
+    }
+
     });
   });
 
@@ -59,8 +67,40 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
     // (data is a list of objects)
     // save the data for use later (when the button is clicked):
     girlNames = data;
+
+    // prepopulate list with top 10 names
+    var favGirl = document.querySelector("#favGirlList");
+    var i;
+    for (i = 0; i < 10; i++) {
+      var newTopGirl = document.createElement("li");
+      newTopGirl.innerHTML = girlNames[i].name;
+      favGirl.appendChild(newTopGirl);
+    }
     });
   });
+
+// Add a boy name to the favs list
+var addBoy = document.querySelector("#addBoyName");
+
+addBoy.onclick = function () {
+  // inputField.value to get whatever was typed into field
+  var newBoyInput = document.querySelector("#newBoyName");
+  var newBoy = newBoyInput.value;
+
+  var body = "name=" + encodeURIComponent(newBoy);  //encodes any special characters
+
+  fetch("http://localhost:8080/boyNames", {
+    method: "POST",
+    body: body,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  }).then(function (response) {
+    console.log("server responded")
+    // call function to do the GET request
+  });
+};
+
 
 
 // functions to delete names from list
