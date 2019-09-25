@@ -4,19 +4,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
 
-BOYS = []
-GIRLS = []
 
-def fileToJSON(fileName, nameList):
+def fileToJSON(fileName):
     with open(fileName) as json_file:
+        nameList = []
         data = json.load(json_file)
         for p in data:
             nameList.append(p)
+    return nameList
 
 
-fileToJSON('boys.json', BOYS)
-fileToJSON('girls.json', GIRLS)
-
+# def JSONToFile()
+#     with open(fileName) as json_file:
+#         pass
 
 
 class MyRequestHandler(BaseHTTPRequestHandler):
@@ -25,6 +25,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
+            girls = fileToJSON('girls.json')
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -33,9 +34,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
-            self.wfile.write(bytes(json.dumps(GIRLS), "utf-8"))
+            self.wfile.write(bytes(json.dumps(girls), "utf-8"))
 
         elif self.path == "/boyNames":
+            boys = fileToJSON('boys.json')
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -44,7 +46,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
-            self.wfile.write(bytes(json.dumps(BOYS), "utf-8"))
+            self.wfile.write(bytes(json.dumps(boys), "utf-8"))
 
         else:
             #404
@@ -54,13 +56,15 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == "/boyNames":
+            names = []
             length = self.headers["Content-Length"]
 
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
             parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
-            BOYS.append(name)
+            names.append(name)
+            print(parsed_body)
 
             # respond to the client
             self.send_response(201)

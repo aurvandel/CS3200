@@ -1,7 +1,3 @@
-// TODO: Get the entire list changed for uploading
-
-// var boyNamesURL = "https://api.jsonbin.io/b/5d7124e68ea2fe6d64eeb096/13";
-// var girlNamesURL = "https://api.jsonbin.io/b/5d712c91fc5937640ce44c04/4";
 var boyNames = [];
 var girlNames = [];
 
@@ -15,11 +11,8 @@ var girlPick = document.querySelector("#girlName");
 
 // function to display names on button click
 boyButton.onclick = function () {
-  // var btn = document.createElement("BUTTON");
-  // btn.id = "boyAdd";
   var randomBoy = Math.floor(Math.random() * boyNames.length)
   boyPick.innerHTML = boyNames[randomBoy].name;
-  // boyPick.prepend(btn);
 
   // Place in history list
   var boyHistoryList = document.querySelector("#boyNameList");
@@ -39,6 +32,7 @@ girlButton.onclick = function () {
     girlHistoryList.appendChild(newListItem);
 };
 
+// TODO: turn this into a function
 
 // request the data from the server for the boy names:
 fetch("http://localhost:8080/boyNames").then(function (response) {
@@ -60,7 +54,7 @@ fetch("http://localhost:8080/boyNames").then(function (response) {
     });
   });
 
-// request the data from the server for the boy names:
+// request the data from the server for the girl names:
 fetch("http://localhost:8080/girlNames").then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
@@ -79,6 +73,8 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
     });
   });
 
+// TODO: get POST request to add to list
+
 // Add a boy name to the favs list
 var addBoy = document.querySelector("#addBoyName");
 
@@ -96,24 +92,26 @@ addBoy.onclick = function () {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   }).then(function (response) {
-    console.log("server responded")
+    console.log(body)
     // call function to do the GET request
   });
 };
 
+// TODO: add click listener for deleting from favs list
 
+// function to move names from history list to favs
+function clickListenerMove (initialLst, newLst) {
+  document.querySelector(initialLst).addEventListener("click",function(item) {
+    var tgt = item.target;
+    var favLstElement = document.querySelector(newLst);
+    if (tgt.tagName.toUpperCase() == "LI") {
+      var newFavElement = document.createElement("li");
+      newFavElement.innerHTML = tgt.innerHTML;
+      favLstElement.appendChild(newFavElement);
+      tgt.parentNode.removeChild(tgt);
+    }
+  });
+}
 
-// functions to delete names from list
-document.querySelector("#boyNameList").addEventListener("click",function(item) {
-  var tgt = item.target;
-  if (tgt.tagName.toUpperCase() == "LI") {
-    tgt.parentNode.removeChild(tgt);
-  }
-});
-
-document.querySelector("#girlNameList").addEventListener("click",function(item) {
-  var tgt = item.target;
-  if (tgt.tagName.toUpperCase() == "LI") {
-    tgt.parentNode.removeChild(tgt);
-  }
-});
+clickListenerMove("#boyNameList", "#favBoyList");
+clickListenerMove("#girlNameList", "#favGirlList");
