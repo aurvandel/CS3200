@@ -35,13 +35,13 @@ girlButton.onclick = function () {
 };
 
 
+
 // request the data from the server for the complete boy names:
 fetch("http://localhost:8080/boyNames").then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)
     // save the data for use later (when the button is clicked):
-    //console.log(data);
     boyNames = data;
 
     });
@@ -57,9 +57,14 @@ function fetchFavoriteBoys () {
     favBoyNames = data;
     // add favorite boy names to list
     var favBoyList = document.querySelector("#favBoyList");
+    // Clear the list if it's not empty
+    var first = favBoyList.firstElementChild; 
+    while (first) { 
+      first.remove(); 
+      first = favBoyList.firstElementChild; 
+    } 
     var i;
     for (i = 0; i < favBoyNames.length; i++) {
-      console.log(favBoyNames[i]);
       var newTopBoy = document.createElement("li");
       newTopBoy.innerHTML = favBoyNames[i].name;
       favBoyList.appendChild(newTopBoy);
@@ -93,6 +98,14 @@ function fetchFavoriteGirls () {
 
     // populate list from file
     var favGirlLst = document.querySelector("#favGirlList");
+    
+    //clear old list
+    var first = favGirlLst.firstElementChild; 
+    while (first) { 
+      first.remove(); 
+      first = favGirlLst.firstElementChild; 
+    } 
+    
     var i;
     for (i = 0; i < favGirlNames.length; i++) {
       var newFavGirl = document.createElement("li");
@@ -107,7 +120,6 @@ fetchFavoriteGirls();
 
 // Add a boy name to the favs list
 var addBoy = document.querySelector("#addBoyName");
-
 addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newBoyInput = document.querySelector("#newBoyName");
@@ -124,16 +136,39 @@ addBoy.onclick = function () {
   }).then(function (response) {
     console.log(body)
     // call function to do the GET request
-    // TODO: Clear the list before I redo it
-    favoriteBoys();
+    fetchFavoriteBoys();
   });
 };
+
+// Add a boy name to the favs list
+var addGirl = document.querySelector("#addGirlName");
+addGirl.onclick = function () {
+  // inputField.value to get whatever was typed into field
+  var newGirlInput = document.querySelector("#newGirlName");
+  var newGirl = newGirlInput.value;
+
+  var body = "name=" + encodeURIComponent(newGirl);  //encodes any special characters
+
+  fetch("http://localhost:8080/girlNames", {
+    method: "POST",
+    body: body,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  }).then(function (response) {
+    console.log(body)
+    // call function to do the GET request
+    fetchFavoriteGirls();
+  });
+};
+
 
 // Delete from favorites list
 function clickListenerDelete (initialLst) {
   document.querySelector(initialLst).addEventListener("click",function(item) {
     var tgt = item.target;
     if (tgt.tagName.toUpperCase() == "LI") {
+      // TODO: remeove tgt from list and POST
       tgt.parentNode.removeChild(tgt);
     }
   });
@@ -152,9 +187,26 @@ function clickListenerMove (initialLst, newLst) {
       newFavElement.innerHTML = tgt.innerHTML;
       favLstElement.appendChild(newFavElement);
       tgt.parentNode.removeChild(tgt);
+      // TODO: add tgt to fav list and POST
     }
   });
 }
 
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
+
+// TODO: figure out how to make this a function
+// pass list, the id of the history list, boyPick/girlPick
+//function generateNameButton (namesLst, hxLst, pick) {
+    //console.log(namesLst);
+    //var randomName = Math.floor(Math.random() * namesLst.length);
+    //pick.innerHTML = namesLst[randomName].name;
+
+    //// Place in history list
+    //var historyList = document.querySelector(hxLst);
+    //var newListItem = document.createElement("li");
+    //newListItem.innerHTML = namesLst[randomName].name;
+    //historyList.appendChild(newListItem);
+//}
+
+//girlButton.onclick = generateNameButton (girlNames, "#girlNameList", girlPick);

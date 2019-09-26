@@ -132,6 +132,7 @@ body {
 
 li {
   list-style-type: none;
+  word-wrap: break-word;
 }
 
 /* Code for slide outs */
@@ -159,7 +160,7 @@ li {
   background: #86a6b3;
   width: 100px;
   padding: 25px;
-  height: 400px;
+  height: auto;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -o-transition-duration: 0.3s;
@@ -207,7 +208,7 @@ li {
   background: pink;
   width: 100px;
   padding: 25px;
-  height: 400px;
+  height: auto;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -o-transition-duration: 0.3s;
@@ -230,3 +231,4 @@ li {
 #slideoutGirl:hover #slideoutInnerGirl {
   right: 0;
 }
+

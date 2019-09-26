@@ -76,8 +76,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             #404
             self.send_response(404)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
-            # TODO: Add body to send
+            self.wfile.write("Unable to locate", self.path)
 
     def do_POST(self):
         if self.path == "/boyNames":
@@ -98,11 +99,32 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_response(201)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
+            
+        if self.path == "/girlNames":
+            length = self.headers["Content-Length"]
+            d = {}
+
+            # read in json file
+            favs = fileToJSON("fav_girls.json")
+            # read the body (data)
+            body = self.rfile.read(int(length)).decode("utf-8")
+            parsed_body = parse_qs(body)        #decodes encoded data
+            name = parsed_body["name"][0]
+            d.update({'name' : name})
+            favs.append(d)
+            JSONToFile("fav_girls.json", favs)
+
+            # respond to the client
+            self.send_response(201)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
 
         else:
             print(self.path)
             self.send_response(404)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
+            self.wfile.write("Unable to locate", self.path)
 
 
 def run():
