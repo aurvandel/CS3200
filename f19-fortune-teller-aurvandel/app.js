@@ -35,7 +35,6 @@ girlButton.onclick = function () {
 };
 
 
-
 // request the data from the server for the complete boy names:
 fetch("http://localhost:8080/boyNames").then(function (response) {
   // parse (unpackage) the data from the server:
