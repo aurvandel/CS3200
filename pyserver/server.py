@@ -14,9 +14,10 @@ def fileToJSON(fileName):
     return nameList
 
 
-# def JSONToFile()
-#     with open(fileName) as json_file:
-#         pass
+def JSONToFile(fileName, data):
+    with open(fileName, 'w') as json_file:
+        app_json = json.dump(data, json_file)
+        print(app_json)
 
 
 class MyRequestHandler(BaseHTTPRequestHandler):
@@ -25,7 +26,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            girls = fileToJSON('girls.json')
+            fullGirls = fileToJSON('girls.json')
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -34,10 +35,22 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
-            self.wfile.write(bytes(json.dumps(girls), "utf-8"))
+            self.wfile.write(bytes(json.dumps(fullGirls), "utf-8"))
+
+        elif self.path == "/favGirlNames":
+            favGirls = fileToJSON('fav_girls.json')
+            # send_response(status code, )
+            self.send_response(200)
+            # send the header data send_header(key, value)
+            self.send_header("Content-Type", "application/json")
+            # have to call end_headers to finish the response
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            # send body
+            self.wfile.write(bytes(json.dumps(favGirls), "utf-8"))
 
         elif self.path == "/boyNames":
-            boys = fileToJSON('boys.json')
+            fullBoys = fileToJSON('boys.json')
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -46,7 +59,19 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
-            self.wfile.write(bytes(json.dumps(boys), "utf-8"))
+            self.wfile.write(bytes(json.dumps(fullBoys), "utf-8"))
+
+        elif self.path == "/favBoyNames":
+            favBoys = fileToJSON('fav_boys.json')
+            # send_response(status code, )
+            self.send_response(200)
+            # send the header data send_header(key, value)
+            self.send_header("Content-Type", "application/json")
+            # have to call end_headers to finish the response
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            # send body
+            self.wfile.write(bytes(json.dumps(favBoys), "utf-8"))
 
         else:
             #404
@@ -56,15 +81,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == "/boyNames":
-            names = []
             length = self.headers["Content-Length"]
+            d = {}
 
+            # read in json file
+            favs = fileToJSON("fav_boys.json")
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
             parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
-            names.append(name)
-            print(parsed_body)
+            d.update({'name' : name})
+            favs.append(d)
+            JSONToFile("fav_boys.json", favs)
 
             # respond to the client
             self.send_response(201)

@@ -1,5 +1,7 @@
 var boyNames = [];
+var favBoyNames = [];
 var girlNames = [];
+var favGirlNames = [];
 
 // query buttons
 var boyButton = document.querySelector("#boyButton");
@@ -32,27 +34,42 @@ girlButton.onclick = function () {
     girlHistoryList.appendChild(newListItem);
 };
 
-// TODO: turn this into a function
 
-// request the data from the server for the boy names:
+// request the data from the server for the complete boy names:
 fetch("http://localhost:8080/boyNames").then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)
     // save the data for use later (when the button is clicked):
+    //console.log(data);
     boyNames = data;
 
-    // prepolulate list with top 10 names
-    var favBoy = document.querySelector("#favBoyList");
+    });
+  });
+
+
+function fetchFavoriteBoys () {
+  fetch("http://localhost:8080/favBoyNames").then(function (response) {
+  // parse (unpackage) the data from the server:
+  response.json().then(function (data) {
+    // (data is a list of objects)
+    // save the data for use later (when the button is clicked):
+    favBoyNames = data;
+    // add favorite boy names to list
+    var favBoyList = document.querySelector("#favBoyList");
     var i;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < favBoyNames.length; i++) {
+      console.log(favBoyNames[i]);
       var newTopBoy = document.createElement("li");
-      newTopBoy.innerHTML = boyNames[i].name;
-      favBoy.appendChild(newTopBoy);
+      newTopBoy.innerHTML = favBoyNames[i].name;
+      favBoyList.appendChild(newTopBoy);
     }
 
     });
   });
+}
+
+fetchFavoriteBoys();
 
 // request the data from the server for the girl names:
 fetch("http://localhost:8080/girlNames").then(function (response) {
@@ -61,19 +78,32 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
     // (data is a list of objects)
     // save the data for use later (when the button is clicked):
     girlNames = data;
-
-    // prepopulate list with top 10 names
-    var favGirl = document.querySelector("#favGirlList");
-    var i;
-    for (i = 0; i < 10; i++) {
-      var newTopGirl = document.createElement("li");
-      newTopGirl.innerHTML = girlNames[i].name;
-      favGirl.appendChild(newTopGirl);
-    }
     });
   });
 
-// TODO: get POST request to add to list
+// request the data from the server for the girl names:
+
+function fetchFavoriteGirls () {
+  fetch("http://localhost:8080/favGirlNames").then(function (response) {
+  // parse (unpackage) the data from the server:
+  response.json().then(function (data) {
+    // (data is a list of objects)
+    // save the data for use later (when the button is clicked):
+    favGirlNames = data;
+
+    // populate list from file
+    var favGirlLst = document.querySelector("#favGirlList");
+    var i;
+    for (i = 0; i < favGirlNames.length; i++) {
+      var newFavGirl = document.createElement("li");
+      newFavGirl.innerHTML = favGirlNames[i].name;
+      favGirlLst.appendChild(newFavGirl);
+    }
+    });
+  });
+}
+
+fetchFavoriteGirls();
 
 // Add a boy name to the favs list
 var addBoy = document.querySelector("#addBoyName");
@@ -94,10 +124,23 @@ addBoy.onclick = function () {
   }).then(function (response) {
     console.log(body)
     // call function to do the GET request
+    // TODO: Clear the list before I redo it
+    favoriteBoys();
   });
 };
 
-// TODO: add click listener for deleting from favs list
+// Delete from favorites list
+function clickListenerDelete (initialLst) {
+  document.querySelector(initialLst).addEventListener("click",function(item) {
+    var tgt = item.target;
+    if (tgt.tagName.toUpperCase() == "LI") {
+      tgt.parentNode.removeChild(tgt);
+    }
+  });
+}
+
+clickListenerDelete("#favBoyList");
+clickListenerDelete("#favGirlList");
 
 // function to move names from history list to favs
 function clickListenerMove (initialLst, newLst) {
