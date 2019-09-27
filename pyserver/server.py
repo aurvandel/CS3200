@@ -78,7 +78,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
-            self.wfile.write("Unable to locate", self.path)
+            self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
 
     def do_POST(self):
         if self.path == "/boyNames":
@@ -99,7 +99,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_response(201)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            
+
         if self.path == "/girlNames":
             length = self.headers["Content-Length"]
             d = {}
@@ -124,7 +124,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
-            self.wfile.write("Unable to locate", self.path)
+            self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
 
 
 def run():
