@@ -3,6 +3,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
+from namesDB import NamesDB
 
 
 def fileToJSON(fileName):
@@ -19,14 +20,26 @@ def JSONToFile(fileName, data):
         app_json = json.dump(data, json_file)
         print(app_json)
 
+NAMES = NamesDB()
+
+#from row factory
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        print("The PATH is:", self.path )
+        # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
+            
             fullGirls = fileToJSON('girls.json')
+
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)

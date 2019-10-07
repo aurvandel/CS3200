@@ -10,16 +10,16 @@ class NamesDB:
         self.cursor = self.connection.cursor()
 
     #insert
-    def insertToDB(self, name):
-        data = [name]
-        self.cursor.execute("INSERT INTO test (name) VALUES (?)", data)
+    def insertToDB(self, name, gender, n, rank, orgin, fav):
+        data = [name, gender, n, rank, origin, fav]
+        self.cursor.execute("INSERT INTO baby_names (name, gender, n, rank, origin, fav) VALUES (?,?,?,?,?,?)", data)
         self.connection.commit()
 
-    def getNames(self):
+    def getNames(self, gender):
         # shows it as a list of tuples. need to change to a list of dicts
-        self.cursor.execute("SELECT * FROM test")
+        data = [gender]
+        self.cursor.execute("SELECT * FROM baby_names WHERE gender IS ?", data)
         result = self.cursor.fetchall()
         return result
 
 
-insertToDB("test again")
