@@ -81,7 +81,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
 
     def do_POST(self):
-        if self.path == "/boyNames":
+        if self.path == "/favBoyNames":
             length = self.headers["Content-Length"]
             d = {}
 
@@ -100,7 +100,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
 
-        if self.path == "/girlNames":
+        elif self.path == "/favGirlNames":
             length = self.headers["Content-Length"]
             d = {}
 

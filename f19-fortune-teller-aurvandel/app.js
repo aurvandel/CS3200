@@ -57,11 +57,11 @@ function fetchFavoriteBoys () {
     // add favorite boy names to list
     var favBoyList = document.querySelector("#favBoyList");
     // Clear the list if it's not empty
-    var first = favBoyList.firstElementChild; 
-    while (first) { 
-      first.remove(); 
-      first = favBoyList.firstElementChild; 
-    } 
+    var first = favBoyList.firstElementChild;
+    while (first) {
+      first.remove();
+      first = favBoyList.firstElementChild;
+    }
     var i;
     for (i = 0; i < favBoyNames.length; i++) {
       var newTopBoy = document.createElement("li");
@@ -97,14 +97,14 @@ function fetchFavoriteGirls () {
 
     // populate list from file
     var favGirlLst = document.querySelector("#favGirlList");
-    
+
     //clear old list
-    var first = favGirlLst.firstElementChild; 
-    while (first) { 
-      first.remove(); 
-      first = favGirlLst.firstElementChild; 
-    } 
-    
+    var first = favGirlLst.firstElementChild;
+    while (first) {
+      first.remove();
+      first = favGirlLst.firstElementChild;
+    }
+
     var i;
     for (i = 0; i < favGirlNames.length; i++) {
       var newFavGirl = document.createElement("li");
@@ -126,7 +126,7 @@ addBoy.onclick = function () {
 
   var body = "name=" + encodeURIComponent(newBoy);  //encodes any special characters
 
-  fetch("http://localhost:8080/boyNames", {
+  fetch("http://localhost:8080/favBoyNames", {
     method: "POST",
     body: body,
     headers: {
@@ -148,7 +148,7 @@ addGirl.onclick = function () {
 
   var body = "name=" + encodeURIComponent(newGirl);  //encodes any special characters
 
-  fetch("http://localhost:8080/girlNames", {
+  fetch("http://localhost:8080/favGirlNames", {
     method: "POST",
     body: body,
     headers: {
