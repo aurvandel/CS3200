@@ -6,40 +6,12 @@ import json
 from namesDB import NamesDB
 
 
-def fileToJSON(fileName):
-    with open(fileName) as json_file:
-        nameList = []
-        data = json.load(json_file)
-        for p in data:
-            nameList.append(p)
-    return nameList
-
-
-def JSONToFile(fileName, data):
-    with open(fileName, 'w') as json_file:
-        app_json = json.dump(data, json_file)
-        print(app_json)
-
-NAMES = NamesDB()
-
-#from row factory
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
-
-
 class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            
-            fullGirls = fileToJSON('girls.json')
-
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -48,10 +20,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             # send body
+            db = NamesDB()
+            fullGirls = db.getNames("F", 0)
             self.wfile.write(bytes(json.dumps(fullGirls), "utf-8"))
 
         elif self.path == "/favGirlNames":
-            favGirls = fileToJSON('fav_girls.json')
+            db = NamesDB()
+            favGirls = db.getNames("F", 1)
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -63,7 +38,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(favGirls), "utf-8"))
 
         elif self.path == "/boyNames":
-            fullBoys = fileToJSON('boys.json')
+            db = NamesDB()
+            fullBoys = db.getNames("M", 0)
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -75,7 +51,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(fullBoys), "utf-8"))
 
         elif self.path == "/favBoyNames":
-            favBoys = fileToJSON('fav_boys.json')
+            db = NamesDB()
+            favBoys = db.getNames("M", 1)
             # send_response(status code, )
             self.send_response(200)
             # send the header data send_header(key, value)
@@ -94,10 +71,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
 
     def do_POST(self):
+        #TODO: change data from file to db for all posts
         if self.path == "/favBoyNames":
             length = self.headers["Content-Length"]
             d = {}
-
             # read in json file
             favs = fileToJSON("fav_boys.json")
             # read the body (data)
