@@ -68,9 +68,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             name = parsed_body["name"][0]
             # TODO: put in real code for gender, n, rank, origin, fav
             gender = 'M'
-            n = None
-            rank = None
-            origin = None
+            n = rank = origin = None
             fav = 1
             db = NamesDB()
             db.insertName(name, gender, n, rank, origin, fav)
@@ -88,9 +86,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             name = parsed_body["name"][0]
             # TODO: put in real code for gender, n, rank, origin, fav
             gender = 'F'
-            n = None
-            rank = None
-            origin = None
+            n = rank = origin = None
             fav = 1
             db = NamesDB()
             db.insertName(name, gender, n, rank, origin, fav)
