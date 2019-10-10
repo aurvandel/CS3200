@@ -21,7 +21,7 @@ class NamesDB:
 
 
     #insert
-    def insertName(self, name, gender, n, rank, orgin, fav):
+    def insertName(self, name, gender, n, rank, origin, fav):
         data = [name, gender, n, rank, origin, fav]
         self.cursor.execute("INSERT INTO baby_names (name, gender, n, rank, origin, fav) VALUES (?,?,?,?,?,?)", data)
         self.connection.commit()

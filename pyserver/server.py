@@ -8,82 +8,72 @@ from namesDB import NamesDB
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
+    def sendResponse(self, code):
+        # send_response(status code, )
+        self.send_response(code)
+        # send the header data send_header(key, value)
+        self.send_header("Content-Type", "application/json")
+        # have to call end_headers to finish the response
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+
+    def send404(self):
+        print(self.path)
+        self.send_response(404)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
+
     def do_GET(self):
         # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            # send_response(status code, )
-            self.send_response(200)
-            # send the header data send_header(key, value)
-            self.send_header("Content-Type", "application/json")
-            # have to call end_headers to finish the response
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
+            self.sendResponse(200)
             # send body
             db = NamesDB()
             fullGirls = db.getNames("F", 0)
             self.wfile.write(bytes(json.dumps(fullGirls), "utf-8"))
 
         elif self.path == "/favGirlNames":
+            self.sendResponse(200)
             db = NamesDB()
             favGirls = db.getNames("F", 1)
-            # send_response(status code, )
-            self.send_response(200)
-            # send the header data send_header(key, value)
-            self.send_header("Content-Type", "application/json")
-            # have to call end_headers to finish the response
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
             # send body
             self.wfile.write(bytes(json.dumps(favGirls), "utf-8"))
 
         elif self.path == "/boyNames":
+            self.sendResponse(200)
             db = NamesDB()
             fullBoys = db.getNames("M", 0)
-            # send_response(status code, )
-            self.send_response(200)
-            # send the header data send_header(key, value)
-            self.send_header("Content-Type", "application/json")
-            # have to call end_headers to finish the response
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
             # send body
             self.wfile.write(bytes(json.dumps(fullBoys), "utf-8"))
 
         elif self.path == "/favBoyNames":
+            self.sendResponse(200)
             db = NamesDB()
             favBoys = db.getNames("M", 1)
-            # send_response(status code, )
-            self.send_response(200)
-            # send the header data send_header(key, value)
-            self.send_header("Content-Type", "application/json")
-            # have to call end_headers to finish the response
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
             # send body
             self.wfile.write(bytes(json.dumps(favBoys), "utf-8"))
 
         else:
-            #404
-            self.send_response(404)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
+            self.send404()
 
     def do_POST(self):
         #TODO: change data from file to db for all posts
         if self.path == "/favBoyNames":
             length = self.headers["Content-Length"]
-            d = {}
-            # read in json file
-            favs = fileToJSON("fav_boys.json")
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
             parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
-            d.update({'name' : name})
-            favs.append(d)
-            JSONToFile("fav_boys.json", favs)
+            # TODO: put in real code for gender, n, rank, origin, fav
+            gender = 'M'
+            n = None
+            rank = None
+            origin = None
+            fav = 1
+            db = NamesDB()
+            db.insertName(name, gender, n, rank, origin, fav)
 
             # respond to the client
             self.send_response(201)
@@ -92,29 +82,25 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path == "/favGirlNames":
             length = self.headers["Content-Length"]
-            d = {}
-
-            # read in json file
-            favs = fileToJSON("fav_girls.json")
             # read the body (data)
             body = self.rfile.read(int(length)).decode("utf-8")
             parsed_body = parse_qs(body)        #decodes encoded data
             name = parsed_body["name"][0]
-            d.update({'name' : name})
-            favs.append(d)
-            JSONToFile("fav_girls.json", favs)
-
+            # TODO: put in real code for gender, n, rank, origin, fav
+            gender = 'F'
+            n = None
+            rank = None
+            origin = None
+            fav = 1
+            db = NamesDB()
+            db.insertName(name, gender, n, rank, origin, fav)
             # respond to the client
             self.send_response(201)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
 
         else:
-            print(self.path)
-            self.send_response(404)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
+            self.send404()
 
 
 def run():
