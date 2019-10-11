@@ -194,6 +194,22 @@ function clickListenerMove (initialLst, newLst) {
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
 
+// code for modal input form
+let modalBtn = document.querySelector("#modal-btn")
+let modal = document.querySelector(".modal")
+let closeBtn = document.querySelector(".close-btn")
+modalBtn.onclick = function(){
+  modal.style.display = "block"
+}
+closeBtn.onclick = function(){
+  modal.style.display = "none"
+}
+window.onclick = function(e){
+  if(e.target == modal){
+    modal.style.display = "none"
+  }
+}
+
 // TODO: figure out how to make this a function
 // pass list, the id of the history list, boyPick/girlPick
 //function generateNameButton (namesLst, hxLst, pick) {
