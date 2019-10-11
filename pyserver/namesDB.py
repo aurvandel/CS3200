@@ -19,7 +19,6 @@ class NamesDB:
         # where you are at in the db (iterator)
         self.cursor = self.connection.cursor()
 
-
     #insert
     def insertName(self, name, gender, n, rank, origin, fav):
         data = [name, gender, n, rank, origin, fav]
@@ -31,8 +30,13 @@ class NamesDB:
         # shows it as a list of tuples. need to change to a list of dicts
         data = [gender, fav]
         self.cursor.execute("SELECT * FROM baby_names WHERE gender IS ? AND fav IS ?", data)
-        result = self.cursor.fetchall()
+        result = self.cursor.fetchall()     #returns a list
         return result
 
+    def getName(self, id):
+        data = [id]
+        self.cursor.execute("SELECT * FROM baby_names WHERE id = ?", data)
+        result = self.cursor.fetchone()     #returns either 1 dictionary or None
+        return result
 
     # need an update and delete method

@@ -8,7 +8,7 @@ from namesDB import NamesDB
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
-    def sendResponse(self, code):
+    def sendGETResponse(self, code):
         # send_response(status code, )
         self.send_response(code)
         # send the header data send_header(key, value)
@@ -28,28 +28,41 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            self.sendResponse(200)
+            self.sendGETResponse(200)
             # send body
             db = NamesDB()
             fullGirls = db.getNames("F", 0)
             self.wfile.write(bytes(json.dumps(fullGirls), "utf-8"))
 
+        elif self.path.startswith("/girlNames/"):
+            parts = self.path.split("/")
+            nameID = parts[-1]
+            print(nameID)
+            db = NamesDB()
+            name = db.getName(nameID)
+            if name != None:
+                self.sendGETResponse(200)
+                self.wfile.write(bytes(json.dumps(name), "utf-8"))
+            else:
+                self.send(404)
+
+
         elif self.path == "/favGirlNames":
-            self.sendResponse(200)
+            self.sendGETResponse(200)
             db = NamesDB()
             favGirls = db.getNames("F", 1)
             # send body
             self.wfile.write(bytes(json.dumps(favGirls), "utf-8"))
 
         elif self.path == "/boyNames":
-            self.sendResponse(200)
+            self.sendGETResponse(200)
             db = NamesDB()
             fullBoys = db.getNames("M", 0)
             # send body
             self.wfile.write(bytes(json.dumps(fullBoys), "utf-8"))
 
         elif self.path == "/favBoyNames":
-            self.sendResponse(200)
+            self.sendGETResponse(200)
             db = NamesDB()
             favBoys = db.getNames("M", 1)
             # send body
@@ -59,7 +72,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_POST(self):
-        #TODO: change data from file to db for all posts
         if self.path == "/favBoyNames":
             length = self.headers["Content-Length"]
             # read the body (data)
