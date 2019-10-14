@@ -235,12 +235,12 @@ li {
 /*Styling for modal*/
 .modal {
   display: none;
-  position: fixed; 
+  position: fixed;
   padding-top: 50px;
-  left: 0; 
+  left: 0;
   top: 0;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -248,11 +248,11 @@ li {
 .modal-content {
   border: 5px solid #86a6b3;
   border-radius: 5px;
-  position: relative; 
+  position: relative;
   background-image: linear-gradient(#86a6b3, pink);
-  padding: 20px; 
-  margin: auto; 
-  width: 35%;  
+  padding: 20px;
+  margin: auto;
+  width: 25%;
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
@@ -260,9 +260,9 @@ li {
 }
 
 .close-btn {
-  float: right; 
-  color: lightgray; 
-  font-size: 24px;  
+  float: right;
+  color: lightgray;
+  font-size: 24px;
   font-weight: bold;
 }
 
@@ -271,7 +271,7 @@ li {
 }
 
 @-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
+  from {top:-300px; opacity:0}
   to {top:0; opacity:1}
 }
 
@@ -285,3 +285,10 @@ li {
     padding: 5px;
 }
 
+label {
+  font-size: 1em;
+}
+
+#rightCheck {
+  float: right;
+}

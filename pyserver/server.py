@@ -46,7 +46,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             else:
                 self.send(404)
 
-
         elif self.path == "/favGirlNames":
             self.sendGETResponse(200)
             db = NamesDB()
@@ -107,6 +106,16 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
 
+        elif self.path == "/newName":
+            length = self.headers["Content-Length"]
+            body = self.rfile.read(int(length)).decode("utf-8")
+            parsed_body = parse_qs(body)
+            print(parsed_body)
+
+            self.send_response(201)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            
         else:
             self.send404()
 
