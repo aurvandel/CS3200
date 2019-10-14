@@ -123,20 +123,13 @@ addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newBoyInput = document.querySelector("#newBoyName");
   var newBoy = newBoyInput.value;
-  var newGender = 'M';
-  var newN = null;
-  var newRank = null;
-  var newOrigin = null;
-  var newFav = 1;
 
   var body = "name=" + encodeURIComponent(newBoy) + "&" +
-  "gender=" + encodeURIComponent(newGender) + "&" +
-  "n=" + encodeURIComponent(newN) + "&" +
-  "rank=" + encodeURIComponent(newRank) + "&" +
-  "origin=" + encodeURIComponent(newOrigin) + "&" +
-  "fav=" + encodeURIComponent(newFav);
-    
-  console.log(body);
+  "gender=" + encodeURIComponent('M') + "&" +
+  "n=" + encodeURIComponent(null) + "&" +
+  "rank=" + encodeURIComponent(null) + "&" +
+  "origin=" + encodeURIComponent(null) + "&" +
+  "fav=" + encodeURIComponent(1);
 
   fetch("http://localhost:8080/favBoyNames", {
     method: "POST",
@@ -164,7 +157,7 @@ addGirl.onclick = function () {
     "rank=" + encodeURIComponent(null) + "&" +
     "origin=" + encodeURIComponent(null) + "&" +
     "fav=" + encodeURIComponent(1);
-  
+
   fetch("http://localhost:8080/favGirlNames", {
     method: "POST",
     body: body,
@@ -290,7 +283,7 @@ submitBtn.onclick = function () {
     fetchFavoriteGirls();
     fetchFavoriteBoys();
     modal.style.display = "none";
-    
+
     // clear the text boxes
     document.querySelector("#inputName").value = '';
     document.querySelector("#inputN").value = '';

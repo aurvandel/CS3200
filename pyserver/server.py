@@ -8,7 +8,14 @@ from namesDB import NamesDB
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
-    def sendGETResponse(self, code):
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
+    def handleNamesRetrieveCollection(self, code, gender, fav):
         # send_response(status code, )
         self.send_response(code)
         # send the header data send_header(key, value)
@@ -16,6 +23,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # have to call end_headers to finish the response
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
+        # send body
+        db = NamesDB()
+        names = db.getNames(gender, fav)
+        self.wfile.write(bytes(json.dumps(names), "utf-8"))
 
     def send404(self):
         print(self.path)
@@ -23,54 +34,40 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
-        
+
     def do_GET(self):
         # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            self.sendGETResponse(200)
-            # send body
-            db = NamesDB()
-            fullGirls = db.getNames("F", 0)
-            self.wfile.write(bytes(json.dumps(fullGirls), "utf-8"))
+            self.handleNamesRetrieveCollection(200, 'F', 0)
 
+        elif self.path == "/favGirlNames":
+            self.handleNamesRetrieveCollection(200, "F", 1)
+
+        elif self.path == "/boyNames":
+            self.handleNamesRetrieveCollection(200, "M", 0)
+
+        elif self.path == "/favBoyNames":
+            self.handleNamesRetrieveCollection(200, "M", 1)
+
+        # retrieve one name from the collection
         elif self.path.startswith("/girlNames/"):
             parts = self.path.split("/")
             nameID = parts[-1]
-            print(nameID)
             db = NamesDB()
-            name = db.getName(nameID)
+            name = db.getOneName(nameID)
             if name != None:
-                self.sendGETResponse(200)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.wfile.write(bytes(json.dumps(name), "utf-8"))
             else:
-                self.send(404)
-
-        elif self.path == "/favGirlNames":
-            self.sendGETResponse(200)
-            db = NamesDB()
-            favGirls = db.getNames("F", 1)
-            # send body
-            self.wfile.write(bytes(json.dumps(favGirls), "utf-8"))
-
-        elif self.path == "/boyNames":
-            self.sendGETResponse(200)
-            db = NamesDB()
-            fullBoys = db.getNames("M", 0)
-            # send body
-            self.wfile.write(bytes(json.dumps(fullBoys), "utf-8"))
-
-        elif self.path == "/favBoyNames":
-            self.sendGETResponse(200)
-            db = NamesDB()
-            favBoys = db.getNames("M", 1)
-            # send body
-            self.wfile.write(bytes(json.dumps(favBoys), "utf-8"))
+                self.send404()
 
         else:
             self.send404()
 
-    def handlePOST(self):
+    def handleCreateName(self):
         length = self.headers["Content-Length"]
         # read the body (data)
         body = self.rfile.read(int(length)).decode("utf-8")
@@ -89,19 +86,32 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_response(201)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-            
+
     def do_POST(self):
         if self.path == "/favBoyNames":
-            self.handlePOST()
+            self.handleCreateName()
 
         elif self.path == "/favGirlNames":
-            self.handlePOST()
+            self.handleCreateName()
 
         elif self.path == "/newName":
-            self.handlePOST()
-            
+            self.handleCreateName()
+
         else:
             self.send404()
+
+    def do_DELETE(self):
+        if self.path.startswith("/girlNames/"):
+            parts = self.path.split("/")
+            nameID = parts[-1]
+            db = NamesDB()
+            name = db.getOneName(nameID)
+            if name != None:
+                self.send_response(200)
+                db.deleteOneName(nameID)
+            else:
+                self.send404()
+
 
 
 def run():

@@ -33,10 +33,14 @@ class NamesDB:
         result = self.cursor.fetchall()     #returns a list
         return result
 
-    def getName(self, id):
+    def getOneName(self, id):
         data = [id]
         self.cursor.execute("SELECT * FROM baby_names WHERE id = ?", data)
         result = self.cursor.fetchone()     #returns either 1 dictionary or None
         return result
 
     # need an update and delete method
+    def deleteOneName(self, id):
+        data = [id]
+        self.cursor.execute("DELETE FROM baby_names WHERE id = ?", data)
+        self.connection.commit()
