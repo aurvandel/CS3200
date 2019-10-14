@@ -86,7 +86,6 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
   });
 
 // request the data from the server for the girl names:
-
 function fetchFavoriteGirls () {
   fetch("http://localhost:8080/favGirlNames").then(function (response) {
   // parse (unpackage) the data from the server:
@@ -199,6 +198,34 @@ function clickListenerMove (initialLst, newLst) {
     }
   });
 }
+
+var container = document.createElement('div');
+var data = document.createElement('span');
+var favsList = document.querySelector("#favBoyList");
+function mouseOverListener(favs) {
+  document.querySelector(favs).addEventListener("mouseover", function(item) {
+    var tgt = item.target;
+    console.log(tgt);
+    container.className = "tooltip";
+    data.className = "tooltiptext";
+    data.innerHTML = "test";
+    favsList.prepend(container);
+    container.append(data);
+    //data.dataset.tooltip = "this";
+    tgt.style.color = "red";
+  });
+}
+
+function mouseOutListener(favs) {
+  document.querySelector(favs).addEventListener("mouseout", function(item) {
+    var tgt = item.target;
+    tgt.style.color = "black";
+    container.remove();
+  });
+}
+
+mouseOverListener("#favBoyList");
+mouseOutListener("#favBoyList");
 
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
