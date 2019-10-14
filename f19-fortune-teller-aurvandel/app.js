@@ -123,8 +123,20 @@ addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newBoyInput = document.querySelector("#newBoyName");
   var newBoy = newBoyInput.value;
+  var newGender = 'M';
+  var newN = null;
+  var newRank = null;
+  var newOrigin = null;
+  var newFav = 1;
 
-  var body = "name=" + encodeURIComponent(newBoy);  //encodes any special characters
+  var body = "name=" + encodeURIComponent(newBoy) + "&" +
+  "gender=" + encodeURIComponent(newGender) + "&" +
+  "n=" + encodeURIComponent(newN) + "&" +
+  "rank=" + encodeURIComponent(newRank) + "&" +
+  "origin=" + encodeURIComponent(newOrigin) + "&" +
+  "fav=" + encodeURIComponent(newFav);
+    
+  console.log(body);
 
   fetch("http://localhost:8080/favBoyNames", {
     method: "POST",
@@ -146,8 +158,13 @@ addGirl.onclick = function () {
   var newGirlInput = document.querySelector("#newGirlName");
   var newGirl = newGirlInput.value;
 
-  var body = "name=" + encodeURIComponent(newGirl);  //encodes any special characters
-
+  var body = "name=" + encodeURIComponent(newGirl) + "&" +
+    "gender=" + encodeURIComponent('F') + "&" +
+    "n=" + encodeURIComponent(null) + "&" +
+    "rank=" + encodeURIComponent(null) + "&" +
+    "origin=" + encodeURIComponent(null) + "&" +
+    "fav=" + encodeURIComponent(1);
+  
   fetch("http://localhost:8080/favGirlNames", {
     method: "POST",
     body: body,
@@ -160,64 +177,6 @@ addGirl.onclick = function () {
     fetchFavoriteGirls();
   });
 };
-
-// Add a new name to the database
-var submitBtn = document.querySelector("#submit");
-submitBtn.onclick = function () {
-  // inputField.value to get whatever was typed into field
-  var newNameInput = document.querySelector("#inputName");
-  var newName = newNameInput.value;
-
-  var newGenderInputs = document.getElementsByName('inputGender');
-
-   for(i = 0; i < newGenderInputs.length; i++) {
-       if(newGenderInputs[i].checked)
-       var newGender = newGenderInputs[i].value;
-   }
-
-  var newNInput = document.querySelector("#inputN");
-  var newN = newNameInput.value;
-
-  var newRankInput = document.querySelector("#inputRank");
-  var newRank = newRankInput.value;
-
-  var newOriginInput = document.querySelector("#inputOrigin");
-  var newOrigin = newOriginInput.value;
-
-  //TODO: working on getting the checkbox working
-  var newFavInput = document.querySelector("#inputFav");
-  var newFav = 0
-  if (newFavInput.checked) {
-    newFav = newFavInput.value;
-  }
-
-
-
-  var x = document.getElementById("myCheck").checked;
-
-
-  //encodes any special characters
-  var body = "name=" + encodeURIComponent(newName) +
-  "gender=" + encodeURIComponent(newGender) +
-  "n=" + encodeURIComponent(newN) +
-  "rank=" + encodeURIComponent(newRank) +
-  "origin=" + encodeURIComponent(newOrigin) +
-  "fav=" + encodeURIComponent(newFav);
-
-  fetch("http://localhost:8080/newName", {
-    method: "POST",
-    body: body,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  }).then(function (response) {
-    console.log(body)
-    // call function to do the GET request
-    fetchFavoriteGirls();
-    fetchFavoriteBoys();
-  });
-};
-
 
 // Delete from favorites list
 function clickListenerDelete (initialLst) {
@@ -266,7 +225,12 @@ closeBtn.onclick = function(){
 }
 
 cancelBtn.onclick = function(){
-  modal.style.display = "none"
+  modal.style.display = "none";
+    // clear the text boxes
+  document.querySelector("#inputName").value = '';
+  document.querySelector("#inputN").value = '';
+  document.querySelector("#inputRank").value = '';
+  document.querySelector("#inputOrigin").value = '';
 }
 
 window.onclick = function(e){
@@ -274,6 +238,68 @@ window.onclick = function(e){
     modal.style.display = "none"
   }
 }
+
+// Add a new name to the database
+var submitBtn = document.querySelector("#submit");
+submitBtn.onclick = function () {
+  // inputField.value to get whatever was typed into field
+  var newNameInput = document.querySelector("#inputName");
+  var newName = newNameInput.value;
+
+  var newGenderInputs = document.getElementsByName('inputGender');
+
+   for(i = 0; i < newGenderInputs.length; i++) {
+       if(newGenderInputs[i].checked)
+       var newGender = newGenderInputs[i].value;
+   }
+
+  var newNInput = document.querySelector("#inputN");
+  var newN = newNameInput.value;
+
+  var newRankInput = document.querySelector("#inputRank");
+  var newRank = newRankInput.value;
+
+  var newOriginInput = document.querySelector("#inputOrigin");
+  var newOrigin = newOriginInput.value;
+
+  var newFavInput = document.querySelector("#inputFav");
+  var newFav = 0
+
+  if (newFavInput.checked) {
+    newFav = newFavInput.value;
+  }
+
+
+  //encodes any special characters
+  var body = "name=" + encodeURIComponent(newName) + "&" +
+  "gender=" + encodeURIComponent(newGender) + "&" +
+  "n=" + encodeURIComponent(newN) + "&" +
+  "rank=" + encodeURIComponent(newRank) + "&" +
+  "origin=" + encodeURIComponent(newOrigin) + "&" +
+  "fav=" + encodeURIComponent(newFav);
+
+  fetch("http://localhost:8080/newName", {
+    method: "POST",
+    body: body,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  }).then(function (response) {
+    console.log(body)
+    // call function to do the GET request
+    fetchFavoriteGirls();
+    fetchFavoriteBoys();
+    modal.style.display = "none";
+    
+    // clear the text boxes
+    document.querySelector("#inputName").value = '';
+    document.querySelector("#inputN").value = '';
+    document.querySelector("#inputRank").value = '';
+    document.querySelector("#inputOrigin").value = '';
+    document.querySelector("#inputFav").value = '';
+
+  });
+};
 
 // TODO: figure out how to make this a function
 // pass list, the id of the history list, boyPick/girlPick

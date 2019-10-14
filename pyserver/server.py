@@ -23,7 +23,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
-
+        
     def do_GET(self):
         # print("The PATH is:", self.path )
 
@@ -70,51 +70,35 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
+    def handlePOST(self):
+        length = self.headers["Content-Length"]
+        # read the body (data)
+        body = self.rfile.read(int(length)).decode("utf-8")
+        parsed_body = parse_qs(body)        #decodes encoded data
+        print(parsed_body)
+        name = parsed_body["name"][0]
+        gender = parsed_body["gender"][0]
+        n = parsed_body["n"][0]
+        rank = parsed_body["rank"][0]
+        origin = parsed_body["origin"][0]
+        fav = parsed_body["fav"][0]
+        db = NamesDB()
+        db.insertName(name, gender, n, rank, origin, fav)
+
+        # respond to the client
+        self.send_response(201)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+            
     def do_POST(self):
         if self.path == "/favBoyNames":
-            length = self.headers["Content-Length"]
-            # read the body (data)
-            body = self.rfile.read(int(length)).decode("utf-8")
-            parsed_body = parse_qs(body)        #decodes encoded data
-            name = parsed_body["name"][0]
-            # TODO: put in real code for gender, n, rank, origin, fav
-            gender = 'M'
-            n = rank = origin = None
-            fav = 1
-            db = NamesDB()
-            db.insertName(name, gender, n, rank, origin, fav)
-
-            # respond to the client
-            self.send_response(201)
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
+            self.handlePOST()
 
         elif self.path == "/favGirlNames":
-            length = self.headers["Content-Length"]
-            # read the body (data)
-            body = self.rfile.read(int(length)).decode("utf-8")
-            parsed_body = parse_qs(body)        #decodes encoded data
-            name = parsed_body["name"][0]
-            # TODO: put in real code for gender, n, rank, origin, fav
-            gender = 'F'
-            n = rank = origin = None
-            fav = 1
-            db = NamesDB()
-            db.insertName(name, gender, n, rank, origin, fav)
-            # respond to the client
-            self.send_response(201)
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
+            self.handlePOST()
 
         elif self.path == "/newName":
-            length = self.headers["Content-Length"]
-            body = self.rfile.read(int(length)).decode("utf-8")
-            parsed_body = parse_qs(body)
-            print(parsed_body)
-
-            self.send_response(201)
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
+            self.handlePOST()
             
         else:
             self.send404()
