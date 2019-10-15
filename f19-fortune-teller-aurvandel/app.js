@@ -199,21 +199,43 @@ function clickListenerMove (initialLst, newLst) {
   });
 }
 
-nameDataModal = document.querySelector("#nameData");
+var nameDataModal = document.querySelector("#nameData");
+var nameDataUL = document.querySelector("#nameDataUL");
 
 function mouseOverListener(favs) {
   document.querySelector(favs).addEventListener("mouseover", function(item) {
     var tgt = item.target;
+    for (i = 0; i < favBoyNames.length; i++) {
+      if (tgt.textContent == favBoyNames[i].name) {
+        var path = "http://localhost:8080/favBoyNames/" + favBoyNames[i].id;
+        fetch(path).then(function(response) {
+          response.json().then(function(data) {
+            for (var property in data) {
+              var newItem = document.createElement("p");
+              newItem.innerHTML = property + ":" + data[property];
+              nameDataUL.appendChild(newItem);
+            }
+          });
+        });
+      }
+    }
     tgt.style.color = "red";
     nameDataModal.style.visibility = "visible";
   });
 }
 
 function mouseOutListener(favs) {
-  document.querySelector(favs).addEventListener("mouseout", function(item) {
+  document.querySelector(favs).addEventListener("onmouseout", function(item) {
     var tgt = item.target;
     tgt.style.color = "black";
     nameDataModal.style.visibility = "hidden";
+      
+    var child = nameDataUL.lastElementChild;  
+    while (child) { 
+        nameDataUL.removeChild(child); 
+        child = nameDataUL.lastElementChild; 
+    } 
+    
   });
 }
 

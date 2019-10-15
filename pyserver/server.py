@@ -15,9 +15,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
-    def handleNamesRetrieveCollection(self, code, gender, fav):
+    def handleNamesRetrieveCollection(self, gender, fav):
         # send_response(status code, )
-        self.send_response(code)
+        self.send_response(200)
         # send the header data send_header(key, value)
         self.send_header("Content-Type", "application/json")
         # have to call end_headers to finish the response
@@ -27,6 +27,22 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         db = NamesDB()
         names = db.getNames(gender, fav)
         self.wfile.write(bytes(json.dumps(names), "utf-8"))
+        
+    def handleNamesRetrieveMember(self):
+        print(self.path)
+        parts = self.path.split("/")
+        nameID = parts[-1]
+        db = NamesDB()
+        name = db.getOneName(nameID)
+        print(name)
+        if name != None:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(bytes(json.dumps(name), "utf-8"))
+        else:
+            self.send404()
 
     def send404(self):
         print(self.path)
@@ -39,30 +55,20 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # print("The PATH is:", self.path )
 
         if self.path == "/girlNames":
-            self.handleNamesRetrieveCollection(200, 'F', 0)
+            self.handleNamesRetrieveCollection('F', 0)
 
         elif self.path == "/favGirlNames":
-            self.handleNamesRetrieveCollection(200, "F", 1)
+            self.handleNamesRetrieveCollection("F", 1)
 
         elif self.path == "/boyNames":
-            self.handleNamesRetrieveCollection(200, "M", 0)
+            self.handleNamesRetrieveCollection("M", 0)
 
         elif self.path == "/favBoyNames":
-            self.handleNamesRetrieveCollection(200, "M", 1)
+            self.handleNamesRetrieveCollection("M", 1)
 
         # retrieve one name from the collection
-        elif self.path.startswith("/girlNames/"):
-            parts = self.path.split("/")
-            nameID = parts[-1]
-            db = NamesDB()
-            name = db.getOneName(nameID)
-            if name != None:
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.send_header("Access-Control-Allow-Origin", "*")
-                self.wfile.write(bytes(json.dumps(name), "utf-8"))
-            else:
-                self.send404()
+        elif self.path.startswith("/favBoyNames/"):
+            self.handleNamesRetrieveMember()
 
         else:
             self.send404()
