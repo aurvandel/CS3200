@@ -3,50 +3,6 @@ var favBoyNames = [];
 var girlNames = [];
 var favGirlNames = [];
 
-
-(function(){
-  var uls = document.querySelectorAll("ul");
-  for(var i=0; i < uls.length; i++){
-     var a = uls[i];
-     if(a.title !== ''){
-       a.addEventListener('mouseenter',createTip);
-       a.addEventListener('mouseleave',cancelTip);
-     }
-    console.log(a);
-  } 
-  function createTip(ev){
-      var title = this.title;
-      this.title = '';
-      this.setAttribute("tooltip", title);
-      var tooltipWrap = document.createElement("div"); //creates div
-      tooltipWrap.className = 'tooltip'; //adds class
-      tooltipWrap.appendChild(document.createTextNode(title)); //add the text node to the newly created div.
-
-      var firstChild = document.body.firstChild;//gets the first elem after body
-      firstChild.parentNode.insertBefore(tooltipWrap, firstChild); //adds tt before elem 
-      var padding = 5;
-      var linkProps = this.getBoundingClientRect();
-      var tooltipProps = tooltipWrap.getBoundingClientRect(); 
-      var topPos = linkProps.top - (tooltipProps.height + padding);
-      tooltipWrap.setAttribute('style','top:'+topPos+'px;'+'left:'+linkProps.left+'px;');
-    setTimeout(()=>{
- tooltipWrap.style.transform = "translateY(-100%) scale(1)"
-      
-},300)
-   
-      
-  }
-  function cancelTip(ev){
-      var title = this.getAttribute("tooltip");
-      this.title = title;
-      this.removeAttribute("tooltip");
-      document.querySelector(".tooltip").remove();
-  }
-})();
-
-
-
-
 // query buttons
 var boyButton = document.querySelector("#boyButton");
 var girlButton = document.querySelector("#girlButton");
@@ -243,20 +199,13 @@ function clickListenerMove (initialLst, newLst) {
   });
 }
 
-var container = document.createElement('div');
-var data = document.createElement('span');
-var favsList = document.querySelector("#favBoyList");
+nameDataModal = document.querySelector("#nameData");
+
 function mouseOverListener(favs) {
   document.querySelector(favs).addEventListener("mouseover", function(item) {
     var tgt = item.target;
-    console.log(tgt);
-    container.className = "tooltip";
-    data.className = "tooltiptext";
-    data.innerHTML = "test";
-    favsList.prepend(container);
-    container.append(data);
-    data.dataset.tooltip = "this";
     tgt.style.color = "red";
+    nameDataModal.style.visibility = "visible";
   });
 }
 
@@ -264,19 +213,19 @@ function mouseOutListener(favs) {
   document.querySelector(favs).addEventListener("mouseout", function(item) {
     var tgt = item.target;
     tgt.style.color = "black";
-    container.remove();
+    nameDataModal.style.visibility = "hidden";
   });
 }
 
-//mouseOverListener("#favBoyList");
-//mouseOutListener("#favBoyList");
+mouseOverListener("#favBoyList");
+mouseOutListener("#favBoyList");
 
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
 
 // code for modal input form
 var modalBtn = document.querySelector("#modal-btn")
-var modal = document.querySelector(".modal")
+var modal = document.querySelector(".inputModal")
 var closeBtn = document.querySelector(".close-btn")
 var cancelBtn = document.querySelector("#cancel")
 
