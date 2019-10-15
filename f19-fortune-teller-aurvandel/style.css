@@ -294,13 +294,18 @@ label {
 }
 
 /* Tooltip container */
+/*
 .tooltip {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+/*
 }
+*/
+*/
 
 /* Tooltip text */
+/*
 .tooltip .tooltiptext {
   top: -5px;
   left: 30px;
@@ -312,6 +317,37 @@ label {
   border-radius: 6px;
  
   /* Position the tooltip text - see examples below! */
+/*
   position: absolute;
   z-index: 1;
 }
+*/
+*/
+
+.tooltip {    
+    position: absolute;
+    background: #646464;
+  max-width:120px;
+  line-height:1.5;
+    border-radius:4px;
+    padding: 6px 12px;
+    font-family: arial;
+    font-size: 12px;
+    text-shadow: 0px 1px 1px #000;
+    color: #ffc64a;
+  transition: transform .2s ease-out;
+    transform: translateY(-100%) scale(0);
+  transform-origin: bottom left;
+
+  }
+ .tooltip:before {
+    content : " ";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #646464;
+    position:absolute;
+    bottom:-5px;
+    left:5px;
+  } 

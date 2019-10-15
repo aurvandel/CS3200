@@ -3,6 +3,50 @@ var favBoyNames = [];
 var girlNames = [];
 var favGirlNames = [];
 
+
+(function(){
+  var uls = document.querySelectorAll("ul");
+  for(var i=0; i < uls.length; i++){
+     var a = uls[i];
+     if(a.title !== ''){
+       a.addEventListener('mouseenter',createTip);
+       a.addEventListener('mouseleave',cancelTip);
+     }
+    console.log(a);
+  } 
+  function createTip(ev){
+      var title = this.title;
+      this.title = '';
+      this.setAttribute("tooltip", title);
+      var tooltipWrap = document.createElement("div"); //creates div
+      tooltipWrap.className = 'tooltip'; //adds class
+      tooltipWrap.appendChild(document.createTextNode(title)); //add the text node to the newly created div.
+
+      var firstChild = document.body.firstChild;//gets the first elem after body
+      firstChild.parentNode.insertBefore(tooltipWrap, firstChild); //adds tt before elem 
+      var padding = 5;
+      var linkProps = this.getBoundingClientRect();
+      var tooltipProps = tooltipWrap.getBoundingClientRect(); 
+      var topPos = linkProps.top - (tooltipProps.height + padding);
+      tooltipWrap.setAttribute('style','top:'+topPos+'px;'+'left:'+linkProps.left+'px;');
+    setTimeout(()=>{
+ tooltipWrap.style.transform = "translateY(-100%) scale(1)"
+      
+},300)
+   
+      
+  }
+  function cancelTip(ev){
+      var title = this.getAttribute("tooltip");
+      this.title = title;
+      this.removeAttribute("tooltip");
+      document.querySelector(".tooltip").remove();
+  }
+})();
+
+
+
+
 // query buttons
 var boyButton = document.querySelector("#boyButton");
 var girlButton = document.querySelector("#girlButton");
@@ -211,7 +255,7 @@ function mouseOverListener(favs) {
     data.innerHTML = "test";
     favsList.prepend(container);
     container.append(data);
-    //data.dataset.tooltip = "this";
+    data.dataset.tooltip = "this";
     tgt.style.color = "red";
   });
 }
@@ -224,8 +268,8 @@ function mouseOutListener(favs) {
   });
 }
 
-mouseOverListener("#favBoyList");
-mouseOutListener("#favBoyList");
+//mouseOverListener("#favBoyList");
+//mouseOutListener("#favBoyList");
 
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
