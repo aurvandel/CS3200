@@ -206,6 +206,9 @@ function mouseOverListener(favs) {
   document.querySelector(favs).addEventListener("mouseover", function(item) {
     var tgt = item.target;
     for (i = 0; i < favBoyNames.length; i++) {
+      // var deleteBtn = document.createElement("button");
+      // deleteBtn.innerHTML = "delete";
+      // nameDataUL.appendChild(deleteBtn);
       if (tgt.textContent == favBoyNames[i].name) {
         var path = "http://localhost:8080/favBoyNames/" + favBoyNames[i].id;
         fetch(path).then(function(response) {
@@ -224,18 +227,27 @@ function mouseOverListener(favs) {
   });
 }
 
+/*
+var deleteBtn = document.createElement("button");
+deleteBtn.innerHTML = "delete";
+deleteBtn.onclick = function () {
+
+}
+newListItem.appendChild(deleteBtn);
+*/
 function mouseOutListener(favs) {
-  document.querySelector(favs).addEventListener("onmouseout", function(item) {
+  document.querySelector(favs).addEventListener("mouseout", function(item) {
     var tgt = item.target;
     tgt.style.color = "black";
     nameDataModal.style.visibility = "hidden";
-      
-    var child = nameDataUL.lastElementChild;  
-    while (child) { 
-        nameDataUL.removeChild(child); 
-        child = nameDataUL.lastElementChild; 
-    } 
-    
+
+    var child = nameDataUL.lastElementChild;
+    while (child) {
+        nameDataUL.removeChild(child);
+        child = nameDataUL.lastElementChild;
+    }
+
+
   });
 }
 
