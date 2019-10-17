@@ -25,7 +25,7 @@ class NamesDB:
         self.cursor.execute("INSERT INTO baby_names (name, gender, n, rank, origin, fav) VALUES (?,?,?,?,?,?)", data)
         self.connection.commit()
 
-    # might need a bulk get and a more specific get method like this one
+    # might need a bulk get and a more specific get method like this one       
     def getNames(self, gender, fav):
         # shows it as a list of tuples. need to change to a list of dicts
         data = [gender, fav]

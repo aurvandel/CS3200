@@ -29,12 +29,11 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(bytes(json.dumps(names), "utf-8"))
         
     def handleNamesRetrieveMember(self):
-        print(self.path)
+        #print(self.path)
         parts = self.path.split("/")
         nameID = parts[-1]
         db = NamesDB()
         name = db.getOneName(nameID)
-        print(name)
         if name != None:
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -56,7 +55,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
-
+                    
         elif self.path == "/favGirlNames":
             self.handleNamesRetrieveCollection("F", 1)
 
@@ -70,6 +69,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         elif self.path.startswith("/favBoyNames/"):
             self.handleNamesRetrieveMember()
 
+        elif self.path.startswith("/favGirlNames/"):
+            self.handleNamesRetrieveMember()
+            
         else:
             self.send404()
 
@@ -78,7 +80,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # read the body (data)
         body = self.rfile.read(int(length)).decode("utf-8")
         parsed_body = parse_qs(body)        #decodes encoded data
-        print(parsed_body)
         name = parsed_body["name"][0]
         gender = parsed_body["gender"][0]
         n = parsed_body["n"][0]

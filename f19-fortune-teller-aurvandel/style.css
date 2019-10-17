@@ -141,6 +141,10 @@ li span {
   
 }
 
+li:hover {
+  color: red;
+}
+
 /* Code for slide outs */
 #slideoutBoy {
   position: fixed;
@@ -271,12 +275,10 @@ label {
   float: right;
 }
 
-
-
-#nameData {
-  visibility: hidden;
+#boyNameData {
+  visibility: visible;
   position: absolute;
-  left: 0;
+  left: 10%;
   top: 0;
   width: 100%;
   height: 100%;
@@ -284,11 +286,11 @@ label {
   z-index: 1000;
 }
 
-#nameData div {
-  width:350px;
-  height: 80px;
+#boyNameData div {
+  width: auto;
+  height: auto;
   margin: 100px auto;
-  background-color: #f2f2f2;
+  background-image: linear-gradient(#86a6b3, pink);
   border-radius: 10px;
   border:1px solid #666666;
   padding:15px;
@@ -300,4 +302,9 @@ label {
   left: 15%;
   top: 100px;
   transform: translate(-50%, -50%);
+}
+
+#boyNameDataUL {
+  display: flex;
+  flex-direction: column;
 }

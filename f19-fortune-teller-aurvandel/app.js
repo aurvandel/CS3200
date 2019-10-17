@@ -1,3 +1,8 @@
+//TODO: Make/style modal for girl name data
+//TODO: Decide on delete button placement and usage
+//TODO: Fix styling on new buttons
+//TODO: Fix the move on click listener
+
 var boyNames = [];
 var favBoyNames = [];
 var girlNames = [];
@@ -45,35 +50,95 @@ fetch("http://localhost:8080/boyNames").then(function (response) {
 
     });
   });
+  
+/* Maybe refactor this for another time
+function fetchAll() {
+  fetch("http://localhost:8080/names").then(function (response) {
+    response.json().then(function (names) {
+      console.log(names);
+      names.forEach(function(name) {
+        if (name.gender == "M") {
+          if (name.fav == 1) {
+            favBoyNames.push(name)
+          } else {
+            boyNames.push(name)
+          }
+        }
+
+      });
+    });
+  });
+}
+*/
 
 
-function fetchFavoriteBoys () {
-  fetch("http://localhost:8080/favBoyNames").then(function (response) {
-  // parse (unpackage) the data from the server:
-  response.json().then(function (data) {
-    // (data is a list of objects)
-    // save the data for use later (when the button is clicked):
-    favBoyNames = data;
-    // add favorite boy names to list
-    var favBoyList = document.querySelector("#favBoyList");
-    // Clear the list if it's not empty
-    var first = favBoyList.firstElementChild;
-    while (first) {
-      first.remove();
-      first = favBoyList.firstElementChild;
-    }
-    var i;
-    for (i = 0; i < favBoyNames.length; i++) {
-      var newTopBoy = document.createElement("li");
-      newTopBoy.innerHTML = favBoyNames[i].name;
-      favBoyList.appendChild(newTopBoy);
-    }
-
+var boyNameDataModal = document.querySelector("#boyNameData");
+var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
+function fetchFavorites (path, favsListEl, dataModalNameEl, 
+  nameDataModal, nameDataDiv) {
+    
+  fetch(path).then(function (response) {
+    response.json().then(function (data) {
+      favNames = data;
+      var favList = document.querySelector(favsListEl);
+      // Clear the list if it's not empty
+      var first = favList.firstElementChild;
+      while (first) {
+        first.remove();
+        first = favList.firstElementChild;
+      }
+      favNames.forEach(function(favName) {
+        var newTop = document.createElement("p");
+        newTop.innerHTML = favName.name;
+        favList.appendChild(newTop);
+        newTop.addEventListener("click", function(item) {
+          nameDataModal.style.visibility = "visible";
+          clearList(nameDataDiv);
+          var memberPath = path + "/" + favName.id;
+          fetch(memberPath).then(function(response) {
+            response.json().then(function(data) {
+            // put the name in h3
+              document.querySelector(dataModalNameEl).innerHTML = data.name;
+            
+              var rank = document.createElement("p");
+              rank.innerHTML = "Popularity: " + data.rank;
+              nameDataDiv.appendChild(rank);
+            
+              var n = document.createElement("p");
+              n.innerHTML = "Number: " + data.n;
+              nameDataDiv.appendChild(n);
+            
+              var origin = document.createElement("p");
+              origin.innerHTML = "Origin: " + data.origin;
+              nameDataDiv.appendChild(origin);
+          });
+        });        
+              
+      });
+      /*
+      newTopBoy.addEventListener("mouseout", function(item) {
+        item.target.style.color = "black";
+        nameDataModal.style.visibility = "hidden";
+        var child = nameDataUL.lastElementChild;
+        while (child) {
+          nameDataUL.removeChild(child);
+          child = nameDataUL.lastElementChild;
+        }
+      });
+  */
+    })
     });
   });
 }
 
-fetchFavoriteBoys();
+// Get the list of favorite boy names
+fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList", 
+  "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
+
+// TODO: need modal for favorite girl names
+// Get the list of favorite girl names
+fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
+  "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
 
 // request the data from the server for the girl names:
 fetch("http://localhost:8080/girlNames").then(function (response) {
@@ -85,36 +150,6 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
     });
   });
 
-// request the data from the server for the girl names:
-function fetchFavoriteGirls () {
-  fetch("http://localhost:8080/favGirlNames").then(function (response) {
-  // parse (unpackage) the data from the server:
-  response.json().then(function (data) {
-    // (data is a list of objects)
-    // save the data for use later (when the button is clicked):
-    favGirlNames = data;
-
-    // populate list from file
-    var favGirlLst = document.querySelector("#favGirlList");
-
-    //clear old list
-    var first = favGirlLst.firstElementChild;
-    while (first) {
-      first.remove();
-      first = favGirlLst.firstElementChild;
-    }
-
-    var i;
-    for (i = 0; i < favGirlNames.length; i++) {
-      var newFavGirl = document.createElement("li");
-      newFavGirl.innerHTML = favGirlNames[i].name;
-      favGirlLst.appendChild(newFavGirl);
-    }
-    });
-  });
-}
-
-fetchFavoriteGirls();
 
 // Add a boy name to the favs list
 var addBoy = document.querySelector("#addBoyName");
@@ -137,13 +172,12 @@ addBoy.onclick = function () {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   }).then(function (response) {
-    console.log(body)
     // call function to do the GET request
     fetchFavoriteBoys();
   });
 };
 
-// Add a boy name to the favs list
+// Add a girl name to the favs list
 var addGirl = document.querySelector("#addGirlName");
 addGirl.onclick = function () {
   // inputField.value to get whatever was typed into field
@@ -164,12 +198,12 @@ addGirl.onclick = function () {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   }).then(function (response) {
-    console.log(body)
     // call function to do the GET request
     fetchFavoriteGirls();
   });
 };
 
+/*
 // Delete from favorites list
 function clickListenerDelete (initialLst) {
   document.querySelector(initialLst).addEventListener("click",function(item) {
@@ -183,6 +217,7 @@ function clickListenerDelete (initialLst) {
 
 clickListenerDelete("#favBoyList");
 clickListenerDelete("#favGirlList");
+*/
 
 // function to move names from history list to favs
 function clickListenerMove (initialLst, newLst) {
@@ -199,33 +234,7 @@ function clickListenerMove (initialLst, newLst) {
   });
 }
 
-var nameDataModal = document.querySelector("#nameData");
-var nameDataUL = document.querySelector("#nameDataUL");
 
-function mouseOverListener(favs) {
-  document.querySelector(favs).addEventListener("mouseover", function(item) {
-    var tgt = item.target;
-    for (i = 0; i < favBoyNames.length; i++) {
-      // var deleteBtn = document.createElement("button");
-      // deleteBtn.innerHTML = "delete";
-      // nameDataUL.appendChild(deleteBtn);
-      if (tgt.textContent == favBoyNames[i].name) {
-        var path = "http://localhost:8080/favBoyNames/" + favBoyNames[i].id;
-        fetch(path).then(function(response) {
-          response.json().then(function(data) {
-            for (var property in data) {
-              var newItem = document.createElement("p");
-              newItem.innerHTML = property + ":" + data[property];
-              nameDataUL.appendChild(newItem);
-            }
-          });
-        });
-      }
-    }
-    tgt.style.color = "red";
-    nameDataModal.style.visibility = "visible";
-  });
-}
 
 /*
 var deleteBtn = document.createElement("button");
@@ -235,24 +244,7 @@ deleteBtn.onclick = function () {
 }
 newListItem.appendChild(deleteBtn);
 */
-function mouseOutListener(favs) {
-  document.querySelector(favs).addEventListener("mouseout", function(item) {
-    var tgt = item.target;
-    tgt.style.color = "black";
-    nameDataModal.style.visibility = "hidden";
 
-    var child = nameDataUL.lastElementChild;
-    while (child) {
-        nameDataUL.removeChild(child);
-        child = nameDataUL.lastElementChild;
-    }
-
-
-  });
-}
-
-mouseOverListener("#favBoyList");
-mouseOutListener("#favBoyList");
 
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
@@ -281,10 +273,29 @@ cancelBtn.onclick = function(){
 }
 
 window.onclick = function(e){
-  if(e.target == modal){
+
+  if(e.target == modal) {
     modal.style.display = "none"
+  } else if(e.target == boyNameDataModal) {
+    boyNameDataModal.style.visibility = "hidden";
+    clearList(boyNameDataDiv)
   }
 }
+
+function clearList (parentEl) {
+  var child = parentEl.lastElementChild;
+  while (child) {
+    parentEl.removeChild(child);
+    child = parentEl.lastElementChild;
+  }
+}
+
+var dataCloseBtn = document.querySelector("#boyDataClose");
+dataCloseBtn.onclick = function() {
+  boyNameDataModal.style.visibility = "hidden";
+  clearList(boyNameDataDiv)
+}
+  
 
 // Add a new name to the database
 var submitBtn = document.querySelector("#submit");
@@ -348,18 +359,3 @@ submitBtn.onclick = function () {
   });
 };
 
-// TODO: figure out how to make this a function
-// pass list, the id of the history list, boyPick/girlPick
-//function generateNameButton (namesLst, hxLst, pick) {
-    //console.log(namesLst);
-    //var randomName = Math.floor(Math.random() * namesLst.length);
-    //pick.innerHTML = namesLst[randomName].name;
-
-    //// Place in history list
-    //var historyList = document.querySelector(hxLst);
-    //var newListItem = document.createElement("li");
-    //newListItem.innerHTML = namesLst[randomName].name;
-    //historyList.appendChild(newListItem);
-//}
-
-//girlButton.onclick = generateNameButton (girlNames, "#girlNameList", girlPick);
