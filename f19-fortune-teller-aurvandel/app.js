@@ -1,5 +1,5 @@
 //TODO: Decide on delete button placement and usage
-//TODO: Fix the move on click listener
+//TODO: Fix the move on click listener (maybe this is the update method)
 //TODO: Decide how I want to do an update
 
 var boyNames = [];
@@ -129,14 +129,17 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
 // Get the list of favorite boy names
 var boyNameDataModal = document.querySelector("#boyNameData");
 var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
-fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
-  "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
-
 // Get the list of favorite girl names
 var girlNameDataModal = document.querySelector("#girlNameData");
 var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
-fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
+function refreshFavorites () {
+  fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
+  "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
+  fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
   "#girlNameDataName", girlNameDataModal, girlNameDataDiv);
+}
+
+refreshFavorites();
 
 // request the data from the server for the girl names:
 fetch("http://localhost:8080/girlNames").then(function (response) {
@@ -319,7 +322,7 @@ submitBtn.onclick = function () {
    }
 
   var newNInput = document.querySelector("#inputN");
-  var newN = newNameInput.value;
+  var newN = newNInput.value;
 
   var newRankInput = document.querySelector("#inputRank");
   var newRank = newRankInput.value;
@@ -352,8 +355,7 @@ submitBtn.onclick = function () {
   }).then(function (response) {
     console.log(body)
     // call function to do the GET request
-    fetchFavoriteGirls();
-    fetchFavoriteBoys();
+    refreshFavorites();
     modal.style.display = "none";
 
     // clear the text boxes

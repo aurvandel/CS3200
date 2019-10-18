@@ -161,13 +161,14 @@ li:hover {
 #slideoutInnerBoy {
   position: fixed;
   top: 40px;
-  left: -150px;
+  left: -200px;
   background: #86a6b3;
-  width: 100px;
+  width: auto;
   padding: 25px;
   transition: 0.2s ease-out .4s;
   text-align: left;
   border-radius: 0 0 5px 0;
+  max-width: 150px;
 }
 
 #favBoyList {
@@ -176,7 +177,7 @@ li:hover {
 }
 
 #slideoutBoy:hover {
-  left: 150px;
+  left: 200px;
 }
 
 #slideoutBoy:hover #slideoutInnerBoy {
@@ -193,19 +194,21 @@ li:hover {
   background: pink;
   transition: 0.2s ease-out .4s;
   border-radius: 5px 0 0 5px;
+  
 }
 
 #slideoutInnerGirl {
   position: fixed;
   top: 40px;
-  right: -150px;
+  right: -200px;
   background: pink;
-  width: 100px;
+  width: 150px;
   padding: 25px;
   height: auto;
   transition: 0.2s ease-out .4s;
   text-align: left;
   border-radius: 0 0 0 5px;
+  max-width: 150px;
 }
 
 #favGirlList {
@@ -214,7 +217,7 @@ li:hover {
 }
 
 #slideoutGirl:hover {
-  right: 150px;
+  right: 200px;
 }
 
 #slideoutGirl:hover #slideoutInnerGirl {
@@ -302,6 +305,7 @@ label {
   left: 15%;
   top: 100px;
   transform: translate(-50%, -50%);
+  max-width: 300px;
 }
 
 #boyNameDataSpan {
@@ -336,6 +340,7 @@ label {
   right: 10%;
   top: 100px;
   transform: translate(-50%, -50%);
+  max-width: 300px;
 }
 
 #girlNameDataSpan {
