@@ -1,7 +1,6 @@
-//TODO: Make/style modal for girl name data
 //TODO: Decide on delete button placement and usage
-//TODO: Fix styling on new buttons
 //TODO: Fix the move on click listener
+//TODO: Decide how I want to do an update
 
 var boyNames = [];
 var favBoyNames = [];
@@ -50,7 +49,7 @@ fetch("http://localhost:8080/boyNames").then(function (response) {
 
     });
   });
-  
+
 /* Maybe refactor this for another time
 function fetchAll() {
   fetch("http://localhost:8080/names").then(function (response) {
@@ -71,12 +70,9 @@ function fetchAll() {
 }
 */
 
-
-var boyNameDataModal = document.querySelector("#boyNameData");
-var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
-function fetchFavorites (path, favsListEl, dataModalNameEl, 
+function fetchFavorites (path, favsListEl, dataModalNameEl,
   nameDataModal, nameDataDiv) {
-    
+
   fetch(path).then(function (response) {
     response.json().then(function (data) {
       favNames = data;
@@ -88,32 +84,31 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
         first = favList.firstElementChild;
       }
       favNames.forEach(function(favName) {
-        var newTop = document.createElement("p");
+        var newTop = document.createElement("li");
         newTop.innerHTML = favName.name;
         favList.appendChild(newTop);
         newTop.addEventListener("click", function(item) {
-          nameDataModal.style.visibility = "visible";
           clearList(nameDataDiv);
           var memberPath = path + "/" + favName.id;
           fetch(memberPath).then(function(response) {
             response.json().then(function(data) {
             // put the name in h3
               document.querySelector(dataModalNameEl).innerHTML = data.name;
-            
+
               var rank = document.createElement("p");
               rank.innerHTML = "Popularity: " + data.rank;
               nameDataDiv.appendChild(rank);
-            
+
               var n = document.createElement("p");
               n.innerHTML = "Number: " + data.n;
               nameDataDiv.appendChild(n);
-            
+
               var origin = document.createElement("p");
               origin.innerHTML = "Origin: " + data.origin;
               nameDataDiv.appendChild(origin);
           });
-        });        
-              
+        });
+        nameDataModal.style.visibility = "visible";
       });
       /*
       newTopBoy.addEventListener("mouseout", function(item) {
@@ -132,13 +127,16 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
 }
 
 // Get the list of favorite boy names
-fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList", 
+var boyNameDataModal = document.querySelector("#boyNameData");
+var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
+fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
   "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
 
-// TODO: need modal for favorite girl names
 // Get the list of favorite girl names
+var girlNameDataModal = document.querySelector("#girlNameData");
+var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
 fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
-  "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
+  "#girlNameDataName", girlNameDataModal, girlNameDataDiv);
 
 // request the data from the server for the girl names:
 fetch("http://localhost:8080/girlNames").then(function (response) {
@@ -173,7 +171,8 @@ addBoy.onclick = function () {
     }
   }).then(function (response) {
     // call function to do the GET request
-    fetchFavoriteBoys();
+    fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
+      "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
   });
 };
 
@@ -199,7 +198,8 @@ addGirl.onclick = function () {
     }
   }).then(function (response) {
     // call function to do the GET request
-    fetchFavoriteGirls();
+    fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
+      "#girlNameDataName", girlNameDataModal, girlNameDataDiv);
   });
 };
 
@@ -278,7 +278,10 @@ window.onclick = function(e){
     modal.style.display = "none"
   } else if(e.target == boyNameDataModal) {
     boyNameDataModal.style.visibility = "hidden";
-    clearList(boyNameDataDiv)
+    clearList(boyNameDataDiv);
+  } else if(e.target == girlNameDataModal) {
+    girlNameDataModal.style.visibility = "hidden";
+    clearList(girlNameDataDiv);
   }
 }
 
@@ -290,12 +293,16 @@ function clearList (parentEl) {
   }
 }
 
-var dataCloseBtn = document.querySelector("#boyDataClose");
-dataCloseBtn.onclick = function() {
-  boyNameDataModal.style.visibility = "hidden";
-  clearList(boyNameDataDiv)
+function closeDataModal (btn, modal, div) {
+  var closeBtn = document.querySelector(btn);
+  closeBtn.onclick = function() {
+    modal.style.visibility = "hidden";
+    clearList(div);
+  }
 }
-  
+
+closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
+closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
 // Add a new name to the database
 var submitBtn = document.querySelector("#submit");
@@ -358,4 +365,3 @@ submitBtn.onclick = function () {
 
   });
 };
-
