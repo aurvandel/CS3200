@@ -106,6 +106,19 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
               var origin = document.createElement("p");
               origin.innerHTML = "Origin: " + data.origin;
               nameDataDiv.appendChild(origin);
+
+              // Delete button
+              var btnSpan = document.querySelector("#modalBtnSpan");
+              var deleteBtn = document.createElement("button");
+              deleteBtn.className = "modalButtons";
+              deleteBtn.innerHTML = "Delete";
+              deleteBtn.onclick = function () {
+                if(confirm("Are you sure you want to delete " + data.name + "?")) {
+                  console.log("Deleting record ID ", data.id )
+                  deleteName(data.id);
+                }
+              }
+              btnSpan.appendChild(deleteBtn);
           });
         });
         nameDataModal.style.visibility = "visible";
@@ -365,5 +378,15 @@ submitBtn.onclick = function () {
     document.querySelector("#inputOrigin").value = '';
     document.querySelector("#inputFav").value = '';
 
+  });
+};
+
+// Make this function so it can do boys and girls
+var deleteName = function (nameID) {
+  fetch("http://localhost:8080/favGirlNames/" + nameID, {
+    method: "DELETE"
+  }).then(function (response) {
+    // call function to do the GET request
+    refreshFavorites();
   });
 };
