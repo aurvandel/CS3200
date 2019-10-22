@@ -1,6 +1,6 @@
-//TODO: Decide on delete button placement and usage
 //TODO: Fix the move on click listener (maybe this is the update method)
-//TODO: Decide how I want to do an update
+//TODO: Figure out how to fix the update/submit button issue.
+//TODO: PUT still doesn't actually change anything.
 
 var boyNames = [];
 var favBoyNames = [];
@@ -269,7 +269,13 @@ var closeBtn = document.querySelector(".close-btn")
 var cancelBtn = document.querySelector("#cancel")
 
 modalBtn.onclick = function(){
+  clearInputs ();
+  submitBtn.innerHTML = "Submit"; 
+  // replace the descriptive text on the modal
+  document.querySelector("#modalDescription").innerHTML = "Please feel free to add a name to our list";
+  
   modal.style.display = "block"
+
 }
 
 closeBtn.onclick = function(){
@@ -279,10 +285,7 @@ closeBtn.onclick = function(){
 cancelBtn.onclick = function(){
   modal.style.display = "none";
     // clear the text boxes
-  document.querySelector("#inputName").value = '';
-  document.querySelector("#inputN").value = '';
-  document.querySelector("#inputRank").value = '';
-  document.querySelector("#inputOrigin").value = '';
+  clearInputs ();
 }
 
 window.onclick = function(e){
@@ -296,6 +299,7 @@ window.onclick = function(e){
     girlNameDataModal.style.visibility = "hidden";
     clearList(girlNameDataDiv);
   }
+  //clearInputs ();
 }
 
 function clearList (parentEl) {
@@ -318,17 +322,20 @@ closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
 closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
 // Add a new name to the database
-var submitBtn = document.querySelector("#submit");
-submitBtn.onclick = function () {
+function submitName(method, path) {
+  submitBtn.innerHTML = "Submit"; 
+  // replace the descriptive text on the modal
+  document.querySelector("#modalDescription").innerHTML = "Please feel free to add a name to our list";
   // inputField.value to get whatever was typed into field
   var newNameInput = document.querySelector("#inputName");
   var newName = newNameInput.value;
 
-  var newGenderInputs = document.getElementsByName('#inputGender');
+  var newGenderInputs = document.getElementsByName('inputGender');
 
    for(i = 0; i < newGenderInputs.length; i++) {
-       if(newGenderInputs[i].checked)
+      if(newGenderInputs[i].checked) {
        var newGender = newGenderInputs[i].value;
+     }
    }
 
   var newNInput = document.querySelector("#inputN");
@@ -347,36 +354,44 @@ submitBtn.onclick = function () {
     newFav = newFavInput.value;
   }
 
-
   //encodes any special characters
-  var body = "name=" + encodeURIComponent(newName) + "&" +
-  "gender=" + encodeURIComponent(newGender) + "&" +
-  "n=" + encodeURIComponent(newN) + "&" +
-  "rank=" + encodeURIComponent(newRank) + "&" +
-  "origin=" + encodeURIComponent(newOrigin) + "&" +
-  "fav=" + encodeURIComponent(newFav);
-
-  fetch("http://localhost:8080/newName", {
-    method: "POST",
+  var body = "name=" + encodeURIComponent(newName) +
+  "&gender=" + encodeURIComponent(newGender) +
+  "&n=" + encodeURIComponent(newN) +
+  "&rank=" + encodeURIComponent(newRank) +
+  "&origin=" + encodeURIComponent(newOrigin) +
+  "&fav=" + encodeURIComponent(newFav);
+  
+  fetch(path, {
+    method: method,
     body: body,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   }).then(function (response) {
-    console.log(body)
     // call function to do the GET request
     refreshFavorites();
     modal.style.display = "none";
 
     // clear the text boxes
-    document.querySelector("#inputName").value = '';
-    document.querySelector("#inputN").value = '';
-    document.querySelector("#inputRank").value = '';
-    document.querySelector("#inputOrigin").value = '';
-    document.querySelector("#inputFav").value = '';
-    //document.querySelector("#inputGender").value = '';
-
+    clearInputs();
   });
+};
+
+var submitBtn = document.querySelector("#submit");
+submitBtn.onclick = function () {
+  submitName("POST", "http://localhost:8080/newName");
+};
+
+function clearInputs () {
+  document.querySelector("#inputName").value = '';
+  document.querySelector("#inputN").value = '';
+  document.querySelector("#inputRank").value = '';
+  document.querySelector("#inputOrigin").value = '';
+  document.querySelector("#inputFav").checked=false;
+  document.querySelector("#genderMale").checked=false;
+  document.querySelector("#genderFemale").checked=false;
+  document.querySelector("#genderNone").checked=false;
 };
 
 function closeModals () {
@@ -395,6 +410,11 @@ function deleteName(path) {
 function editName(path) {
   modal.style.display = "block";
   closeModals();
+  
+  // replace the old submit button with an update button
+  submitBtn.innerHTML = "Update"; 
+  // replace the descriptive text on the modal
+  document.querySelector("#modalDescription").innerHTML = "Update Name Data";
 
   // retrieve info from member and put in text boxes
   fetch(path).then(function(response) {
@@ -411,19 +431,16 @@ function editName(path) {
       var origin = document.querySelector("#inputOrigin");
       origin.value = data.origin;
 
-      // TODO: working on getting gender to display correctly
-      var newGenderInputs = document.getElementsByName('#inputGender');
-
-      for(i = 0; i < newGenderInputs.length; i++) {
-          if(newGenderInputs[i].checked)
-          var newGender = newGenderInputs[i].value;
-      }
-
+      var gender;
       if (data.gender == "M") {
-        console.log(newGenderInputs[0])
-        newGenderInputs[0].checked=true;
+        gender = document.querySelector("#genderMale");
+      } else if (data.gender == "F") {
+        gender = document.querySelector("#genderFemale");
+      } else {
+        gender = document.querySelector("#genderOther");
       }
-
+      gender.checked=true;
+      
       var fav = document.querySelector("#inputFav");
       if (data.fav == 1) {
         fav.checked=true;
@@ -431,4 +448,10 @@ function editName(path) {
 
     });
   });
-}
+  var updateBtn = document.querySelector("#submit");
+  updateBtn.onclick = function () {
+    submitName("PUT", path);
+  };
+};
+
+

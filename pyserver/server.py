@@ -75,6 +75,31 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
+    def do_PUT(self):
+        if self.path.startswith("/favBoyNames/"):
+            self.handleUpdateName()
+            
+    def handleUpdateName(self):
+        parts = self.path.split("/")
+        nameID = parts[-1]
+        length = self.headers["Content-Length"]
+        # read the body (data)
+        body = self.rfile.read(int(length)).decode("utf-8")
+        parsed_body = parse_qs(body)        #decodes encoded data
+        name = parsed_body["name"][0]
+        gender = parsed_body["gender"][0]
+        n = parsed_body["n"][0]
+        rank = parsed_body["rank"][0]
+        origin = parsed_body["origin"][0]
+        fav = parsed_body["fav"][0]
+        db = NamesDB()
+        db.updateName(nameID, name, gender, n, rank, origin, fav)
+
+        # respond to the client
+        self.send_response(201)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        
     def handleCreateName(self):
         length = self.headers["Content-Length"]
         # read the body (data)
@@ -88,6 +113,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         fav = parsed_body["fav"][0]
         db = NamesDB()
         db.insertName(name, gender, n, rank, origin, fav)
+        
 
         # respond to the client
         self.send_response(201)
