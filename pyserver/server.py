@@ -108,7 +108,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_DELETE(self):
-        if self.path.startswith("/girlNames/"):
+        if self.path.startswith("/favGirlNames/") or self.path.startswith("/favBoyNames/"):
+            print("in delete method")
             parts = self.path.split("/")
             nameID = parts[-1]
             db = NamesDB()
@@ -118,6 +119,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
                 db.deleteOneName(nameID)
             else:
                 self.send404()
+        
+        else:
+            self.send404()
 
 
 

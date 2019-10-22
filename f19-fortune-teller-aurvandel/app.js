@@ -108,17 +108,19 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
               nameDataDiv.appendChild(origin);
 
               // Delete button
-              var btnSpan = document.querySelector("#modalBtnSpan");
-              var deleteBtn = document.createElement("button");
-              deleteBtn.className = "modalButtons";
-              deleteBtn.innerHTML = "Delete";
+              var deleteBtn;
+              if (data.gender == "M") {
+                deleteBtn = document.querySelector("#boyDataDelete");
+              } else {
+                deleteBtn = document.querySelector("#girlDataDelete");
+              }
               deleteBtn.onclick = function () {
                 if(confirm("Are you sure you want to delete " + data.name + "?")) {
-                  console.log("Deleting record ID ", data.id )
-                  deleteName(data.id);
+                  console.log("Deleting record ID ", data.id );
+                  deleteName(memberPath);
                 }
               }
-              btnSpan.appendChild(deleteBtn);
+              
           });
         });
         nameDataModal.style.visibility = "visible";
@@ -381,12 +383,11 @@ submitBtn.onclick = function () {
   });
 };
 
-// Make this function so it can do boys and girls
-var deleteName = function (nameID) {
-  fetch("http://localhost:8080/favGirlNames/" + nameID, {
-    method: "DELETE"
-  }).then(function (response) {
+function deleteName(path) {
+  fetch(path, {method: "DELETE"}).then(function() {
     // call function to do the GET request
+    boyNameDataModal.style.visibility = "hidden";
+    girlNameDataModal.style.visibility = "hidden";
     refreshFavorites();
   });
 };
