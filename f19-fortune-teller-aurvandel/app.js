@@ -109,18 +109,25 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
 
               // Delete button
               var deleteBtn;
+              var editBtn;
               if (data.gender == "M") {
                 deleteBtn = document.querySelector("#boyDataDelete");
+                editBtn = document.querySelector("#boyDataEdit");
               } else {
                 deleteBtn = document.querySelector("#girlDataDelete");
+                 editBtn = document.querySelector("#girlDataEdit");
               }
+
+              editBtn.onclick = function () {
+                editName(memberPath)
+              }
+
               deleteBtn.onclick = function () {
                 if(confirm("Are you sure you want to delete " + data.name + "?")) {
-                  console.log("Deleting record ID ", data.id );
                   deleteName(memberPath);
                 }
               }
-              
+
           });
         });
         nameDataModal.style.visibility = "visible";
@@ -252,18 +259,6 @@ function clickListenerMove (initialLst, newLst) {
   });
 }
 
-
-
-/*
-var deleteBtn = document.createElement("button");
-deleteBtn.innerHTML = "delete";
-deleteBtn.onclick = function () {
-
-}
-newListItem.appendChild(deleteBtn);
-*/
-
-
 clickListenerMove("#boyNameList", "#favBoyList");
 clickListenerMove("#girlNameList", "#favGirlList");
 
@@ -329,7 +324,7 @@ submitBtn.onclick = function () {
   var newNameInput = document.querySelector("#inputName");
   var newName = newNameInput.value;
 
-  var newGenderInputs = document.getElementsByName('inputGender');
+  var newGenderInputs = document.getElementsByName('#inputGender');
 
    for(i = 0; i < newGenderInputs.length; i++) {
        if(newGenderInputs[i].checked)
@@ -379,15 +374,61 @@ submitBtn.onclick = function () {
     document.querySelector("#inputRank").value = '';
     document.querySelector("#inputOrigin").value = '';
     document.querySelector("#inputFav").value = '';
+    //document.querySelector("#inputGender").value = '';
 
   });
 };
+
+function closeModals () {
+  boyNameDataModal.style.visibility = "hidden";
+  girlNameDataModal.style.visibility = "hidden";
+}
 
 function deleteName(path) {
   fetch(path, {method: "DELETE"}).then(function() {
     // call function to do the GET request
-    boyNameDataModal.style.visibility = "hidden";
-    girlNameDataModal.style.visibility = "hidden";
+    closeModals();
     refreshFavorites();
   });
 };
+
+function editName(path) {
+  modal.style.display = "block";
+  closeModals();
+
+  // retrieve info from member and put in text boxes
+  fetch(path).then(function(response) {
+    response.json().then(function(data) {
+      var name = document.querySelector("#inputName");
+      name.value = data.name;
+
+      var n = document.querySelector("#inputN");
+      n.value = data.n;
+
+      var rank = document.querySelector("#inputRank");
+      rank.value = data.rank;
+
+      var origin = document.querySelector("#inputOrigin");
+      origin.value = data.origin;
+
+      // TODO: working on getting gender to display correctly
+      var newGenderInputs = document.getElementsByName('#inputGender');
+
+      for(i = 0; i < newGenderInputs.length; i++) {
+          if(newGenderInputs[i].checked)
+          var newGender = newGenderInputs[i].value;
+      }
+
+      if (data.gender == "M") {
+        console.log(newGenderInputs[0])
+        newGenderInputs[0].checked=true;
+      }
+
+      var fav = document.querySelector("#inputFav");
+      if (data.fav == 1) {
+        fav.checked=true;
+      }
+
+    });
+  });
+}

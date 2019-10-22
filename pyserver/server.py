@@ -27,7 +27,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         db = NamesDB()
         names = db.getNames(gender, fav)
         self.wfile.write(bytes(json.dumps(names), "utf-8"))
-        
+
     def handleNamesRetrieveMember(self):
         #print(self.path)
         parts = self.path.split("/")
@@ -55,7 +55,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
-                    
+
         elif self.path == "/favGirlNames":
             self.handleNamesRetrieveCollection("F", 1)
 
@@ -71,7 +71,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path.startswith("/favGirlNames/"):
             self.handleNamesRetrieveMember()
-            
+
         else:
             self.send404()
 
@@ -109,17 +109,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_DELETE(self):
         if self.path.startswith("/favGirlNames/") or self.path.startswith("/favBoyNames/"):
-            print("in delete method")
             parts = self.path.split("/")
             nameID = parts[-1]
             db = NamesDB()
             name = db.getOneName(nameID)
             if name != None:
-                self.send_response(200)
                 db.deleteOneName(nameID)
+                self.send_response(200)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
             else:
                 self.send404()
-        
+
         else:
             self.send404()
 
