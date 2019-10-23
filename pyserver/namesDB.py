@@ -46,7 +46,6 @@ class NamesDB:
         self.connection.commit()
 
     def updateName(self, id, name, gender, n, rank, origin, fav):
-        data = [id, name, gender, n, rank, origin, fav]
-        print(id)
+        data = [name, gender, n, rank, origin, fav, id]
         self.cursor.execute("UPDATE baby_names SET name=?, gender=?, n=?, rank=?, origin=?, fav=? WHERE id=?", data)
         self.connection.commit()
