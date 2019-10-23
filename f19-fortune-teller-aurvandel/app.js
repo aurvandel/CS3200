@@ -1,6 +1,5 @@
-//TODO: Fix the move on click listener (maybe this is the update method)
-//TODO: Figure out how to fix the update/submit button issue.
-//TODO: PUT still doesn't actually change anything.
+//TODO: write readme
+//TODO: Hover listener doesn't delete the old data.
 
 var boyNames = [];
 var favBoyNames = [];
@@ -15,63 +14,154 @@ var girlButton = document.querySelector("#girlButton");
 var boyPick = document.querySelector("#boyName");
 var girlPick = document.querySelector("#girlName");
 
+// Get the list of favorite boy names
+var boyNameDataModal = document.querySelector("#boyNameData");
+var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
+// Get the list of favorite girl names
+var girlNameDataModal = document.querySelector("#girlNameData");
+var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
+
+// Add a boy name to the favs list
+var addBoy = document.querySelector("#addBoyName");
+
+// Add a girl name to the favs list
+var addGirl = document.querySelector("#addGirlName");
+
+// code for modal input form
+var modalBtn = document.querySelector("#modal-btn")
+var modal = document.querySelector(".inputModal")
+var closeBtn = document.querySelector(".close-btn")
+var cancelBtn = document.querySelector("#cancel")
+
+var submitBtn = document.querySelector("#submit");
+
 // function to display names on button click
 boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
   boyPick.innerHTML = boyNames[randomBoy].name;
+  var path = "http://localhost:8080/favBoyNames/" + boyNames[randomBoy].id;
+  //hover listener for name
+  boyPick.addEventListener("mouseover", function (item) {
+    mouseOverListener(boyNames[randomBoy].name, item, boyNameDataModal, 
+    path, boyNameDataDiv, "#boyNameDataName");
+    clearList(boyNameDataDiv)
+  });
+  boyPick.addEventListener("mouseout", function(item) {
+    mouseOutListener(item);
+  });
 
   // Place in history list
   var boyHistoryList = document.querySelector("#boyNameList");
   var newBoyListItem = document.createElement("li");
   newBoyListItem.innerHTML = boyNames[randomBoy].name;
+  newBoyListItem.addEventListener("click", function (item) { 
+    clickListenerMove(boyNames[randomBoy], path,);
+    item.target.remove();
+  });
   boyHistoryList.appendChild(newBoyListItem);
 };
+
+function mouseOverListener(name, item, nameDataModal, path, nameDataDiv, dataModalNameEl) {
+  fetch(path).then(function(response) {
+    response.json().then(function(data) {
+    // put the name in h3
+      document.querySelector(dataModalNameEl).innerHTML = data.name;
+
+      var rank = document.createElement("p");
+      rank.innerHTML = "Popularity: " + data.rank;
+      nameDataDiv.appendChild(rank);
+
+      var n = document.createElement("p");
+      n.innerHTML = "Number: " + data.n;
+      nameDataDiv.appendChild(n);
+
+      var origin = document.createElement("p");
+      origin.innerHTML = "Origin: " + data.origin;
+      nameDataDiv.appendChild(origin);
+
+      // Delete button
+      var deleteBtn;
+      var editBtn;
+      if (data.gender == "M") {
+        deleteBtn = document.querySelector("#boyDataDelete");
+        editBtn = document.querySelector("#boyDataEdit");
+      } else {
+        deleteBtn = document.querySelector("#girlDataDelete");
+         editBtn = document.querySelector("#girlDataEdit");
+      }
+
+      editBtn.onclick = function () {
+        editName(path)
+      }
+
+      deleteBtn.onclick = function () {
+        if(confirm("Are you sure you want to delete " + data.name + "?")) {
+          deleteName(path);
+        }
+      };
+
+      });
+    var tgt = item.target;
+    tgt.style.color = "red";
+    nameDataModal.style.visibility = "visible";
+
+  });
+}
+
+
+function mouseOutListener(item) {
+  item.target.style.color = "black";
+}
 
 girlButton.onclick = function () {
     var randomGirl = Math.floor(Math.random() * girlNames.length)
     girlPick.innerHTML = girlNames[randomGirl].name;
-
+    
+    var path = "http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id;
+    //hover listener for name
+    girlPick.addEventListener("mouseover", function (item) {
+      mouseOverListener(girlNames[randomGirl].name, item, girlNameDataModal, 
+      path, girlNameDataDiv, "#girlNameDataName");
+    });
+    girlPick.addEventListener("mouseout", function(item) {
+      mouseOutListener(item);
+    });
+  
     // place in history list
     var girlHistoryList = document.querySelector("#girlNameList");
     var newListItem = document.createElement("li");
     newListItem.innerHTML = girlNames[randomGirl].name;
-    newListItem.addEventListener("click", function(item) {
-      //encodes any special characters
-      var body = "name=" + encodeURIComponent(girlNames[randomGirl].name) +
-      "&gender=" + encodeURIComponent(girlNames[randomGirl].gender) +
-      "&n=" + encodeURIComponent(girlNames[randomGirl].n) +
-      "&rank=" + encodeURIComponent(girlNames[randomGirl].rank) +
-      "&origin=" + encodeURIComponent(girlNames[randomGirl].origin) +
-      "&fav=" + encodeURIComponent(1);
-
-      fetch("http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id, {
-        method: "PUT",
-        body: body,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      }).then(function (response) {
-        // call function to do the GET request
-        refreshFavorites();
-      });
+    
+    newListItem.addEventListener("click", function (item) { 
+      clickListenerMove(girlNames[randomGirl], 
+        "http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id,
+        );
+        newListItem.remove();
     });
+  
     girlHistoryList.appendChild(newListItem);
 };
 
-//TODO: Setting this up as a function so it works with both lists
 // function to move names from history list to favs
-function clickListenerMove (nameList) {
-  document.querySelector(initialLst).addEventListener("click",function(item) {
-    var tgt = item.target;
-    var favLstElement = document.querySelector(newLst);
-    if (tgt.tagName.toUpperCase() == "LI") {
-      var newFavElement = document.createElement("li");
-      newFavElement.innerHTML = tgt.innerHTML;
-      favLstElement.appendChild(newFavElement);
-      tgt.parentNode.removeChild(tgt);
-      // TODO: add tgt to fav list and POST
-    }
-  });
+function clickListenerMove (name, path) {
+    //encodes any special characters
+    var body = "name=" + encodeURIComponent(name.name) +
+    "&gender=" + encodeURIComponent(name.gender) +
+    "&n=" + encodeURIComponent(name.n) +
+    "&rank=" + encodeURIComponent(name.rank) +
+    "&origin=" + encodeURIComponent(name.origin) +
+    "&fav=" + encodeURIComponent(1);
+
+    fetch(path, {
+      method: "PUT",
+      body: body,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(function (response) {
+      // call function to do the GET request
+      refreshFavorites();
+    });
 };
 
 // request the data from the server for the complete boy names:
@@ -167,28 +257,12 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
         });
         nameDataModal.style.visibility = "visible";
       });
-      /*
-      newTopBoy.addEventListener("mouseout", function(item) {
-        item.target.style.color = "black";
-        nameDataModal.style.visibility = "hidden";
-        var child = nameDataUL.lastElementChild;
-        while (child) {
-          nameDataUL.removeChild(child);
-          child = nameDataUL.lastElementChild;
-        }
-      });
-  */
     })
     });
   });
 }
 
-// Get the list of favorite boy names
-var boyNameDataModal = document.querySelector("#boyNameData");
-var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
-// Get the list of favorite girl names
-var girlNameDataModal = document.querySelector("#girlNameData");
-var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
+
 function refreshFavorites () {
   fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
   "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
@@ -209,8 +283,6 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
   });
 
 
-// Add a boy name to the favs list
-var addBoy = document.querySelector("#addBoyName");
 addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newBoyInput = document.querySelector("#newBoyName");
@@ -234,10 +306,10 @@ addBoy.onclick = function () {
     fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
       "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
   });
+  newBoyInput.value = "";
 };
 
-// Add a girl name to the favs list
-var addGirl = document.querySelector("#addGirlName");
+
 addGirl.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newGirlInput = document.querySelector("#newGirlName");
@@ -261,34 +333,9 @@ addGirl.onclick = function () {
     fetchFavorites("http://localhost:8080/favGirlNames", "#favGirlList",
       "#girlNameDataName", girlNameDataModal, girlNameDataDiv);
   });
+  newGirlInput.value = "";
 };
 
-/*
-// Delete from favorites list
-function clickListenerDelete (initialLst) {
-  document.querySelector(initialLst).addEventListener("click",function(item) {
-    var tgt = item.target;
-    if (tgt.tagName.toUpperCase() == "LI") {
-      // TODO: remeove tgt from list and POST
-      tgt.parentNode.removeChild(tgt);
-    }
-  });
-}
-
-clickListenerDelete("#favBoyList");
-clickListenerDelete("#favGirlList");
-*/
-
-
-
-//clickListenerMove("#boyNameList", "#favBoyList");
-//clickListenerMove("#girlNameList", "#favGirlList");
-
-// code for modal input form
-var modalBtn = document.querySelector("#modal-btn")
-var modal = document.querySelector(".inputModal")
-var closeBtn = document.querySelector(".close-btn")
-var cancelBtn = document.querySelector("#cancel")
 
 modalBtn.onclick = function(){
   clearInputs ();
@@ -400,7 +447,7 @@ function submitName(method, path) {
   });
 };
 
-var submitBtn = document.querySelector("#submit");
+
 submitBtn.onclick = function () {
   submitName("POST", "http://localhost:8080/newName");
 };
