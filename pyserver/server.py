@@ -5,6 +5,7 @@ from urllib.parse import parse_qs
 import json
 from namesDB import NamesDB
 
+#TODO: Test 404 errors with postman
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
@@ -78,7 +79,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_PUT(self):
         if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
             self.handleUpdateName()
-            
+
         else:
             self.send404()
 
@@ -111,7 +112,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         else:
             self.send404()
-            
+
     def handleCreateName(self):
         length = self.headers["Content-Length"]
         # read the body (data)
@@ -125,13 +126,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         fav = parsed_body["fav"][0]
         db = NamesDB()
         db.insertName(name, gender, n, rank, origin, fav)
-        
+
 
         # respond to the client
         self.send_response(201)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        
+
     def handleUpdateName(self):
         parts = self.path.split("/")
         nameID = parts[-1]
@@ -149,7 +150,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         db.updateName(nameID, name, gender, n, rank, origin, fav)
 
         # respond to the client
-        self.send_response(201)
+        self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 

@@ -35,9 +35,44 @@ girlButton.onclick = function () {
     var girlHistoryList = document.querySelector("#girlNameList");
     var newListItem = document.createElement("li");
     newListItem.innerHTML = girlNames[randomGirl].name;
+    newListItem.addEventListener("click", function(item) {
+      //encodes any special characters
+      var body = "name=" + encodeURIComponent(girlNames[randomGirl].name) +
+      "&gender=" + encodeURIComponent(girlNames[randomGirl].gender) +
+      "&n=" + encodeURIComponent(girlNames[randomGirl].n) +
+      "&rank=" + encodeURIComponent(girlNames[randomGirl].rank) +
+      "&origin=" + encodeURIComponent(girlNames[randomGirl].origin) +
+      "&fav=" + encodeURIComponent(1);
+
+      fetch("http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id, {
+        method: "PUT",
+        body: body,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }).then(function (response) {
+        // call function to do the GET request
+        refreshFavorites();
+      });
+    });
     girlHistoryList.appendChild(newListItem);
 };
 
+//TODO: Setting this up as a function so it works with both lists
+// function to move names from history list to favs
+function clickListenerMove (nameList) {
+  document.querySelector(initialLst).addEventListener("click",function(item) {
+    var tgt = item.target;
+    var favLstElement = document.querySelector(newLst);
+    if (tgt.tagName.toUpperCase() == "LI") {
+      var newFavElement = document.createElement("li");
+      newFavElement.innerHTML = tgt.innerHTML;
+      favLstElement.appendChild(newFavElement);
+      tgt.parentNode.removeChild(tgt);
+      // TODO: add tgt to fav list and POST
+    }
+  });
+};
 
 // request the data from the server for the complete boy names:
 fetch("http://localhost:8080/boyNames").then(function (response) {
@@ -244,23 +279,10 @@ clickListenerDelete("#favBoyList");
 clickListenerDelete("#favGirlList");
 */
 
-// function to move names from history list to favs
-function clickListenerMove (initialLst, newLst) {
-  document.querySelector(initialLst).addEventListener("click",function(item) {
-    var tgt = item.target;
-    var favLstElement = document.querySelector(newLst);
-    if (tgt.tagName.toUpperCase() == "LI") {
-      var newFavElement = document.createElement("li");
-      newFavElement.innerHTML = tgt.innerHTML;
-      favLstElement.appendChild(newFavElement);
-      tgt.parentNode.removeChild(tgt);
-      // TODO: add tgt to fav list and POST
-    }
-  });
-}
 
-clickListenerMove("#boyNameList", "#favBoyList");
-clickListenerMove("#girlNameList", "#favGirlList");
+
+//clickListenerMove("#boyNameList", "#favBoyList");
+//clickListenerMove("#girlNameList", "#favGirlList");
 
 // code for modal input form
 var modalBtn = document.querySelector("#modal-btn")
@@ -270,10 +292,10 @@ var cancelBtn = document.querySelector("#cancel")
 
 modalBtn.onclick = function(){
   clearInputs ();
-  submitBtn.innerHTML = "Submit"; 
+  submitBtn.innerHTML = "Submit";
   // replace the descriptive text on the modal
   document.querySelector("#modalDescription").innerHTML = "Please feel free to add a name to our list";
-  
+
   modal.style.display = "block"
 
 }
@@ -323,7 +345,7 @@ closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
 // Add a new name to the database
 function submitName(method, path) {
-  submitBtn.innerHTML = "Submit"; 
+  submitBtn.innerHTML = "Submit";
   // replace the descriptive text on the modal
   document.querySelector("#modalDescription").innerHTML = "Please feel free to add a name to our list";
   // inputField.value to get whatever was typed into field
@@ -361,7 +383,7 @@ function submitName(method, path) {
   "&rank=" + encodeURIComponent(newRank) +
   "&origin=" + encodeURIComponent(newOrigin) +
   "&fav=" + encodeURIComponent(newFav);
-  
+
   fetch(path, {
     method: method,
     body: body,
@@ -397,7 +419,7 @@ function clearInputs () {
 function closeModals () {
   boyNameDataModal.style.visibility = "hidden";
   girlNameDataModal.style.visibility = "hidden";
-}
+};
 
 function deleteName(path) {
   fetch(path, {method: "DELETE"}).then(function() {
@@ -410,9 +432,9 @@ function deleteName(path) {
 function editName(path) {
   modal.style.display = "block";
   closeModals();
-  
+
   // replace the old submit button with an update button
-  submitBtn.innerHTML = "Update"; 
+  submitBtn.innerHTML = "Update";
   // replace the descriptive text on the modal
   document.querySelector("#modalDescription").innerHTML = "Update Name Data";
 
@@ -440,7 +462,7 @@ function editName(path) {
         gender = document.querySelector("#genderOther");
       }
       gender.checked=true;
-      
+
       var fav = document.querySelector("#inputFav");
       if (data.fav == 1) {
         fav.checked=true;
@@ -453,5 +475,3 @@ function editName(path) {
     submitName("PUT", path);
   };
 };
-
-
