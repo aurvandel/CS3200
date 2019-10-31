@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
+    <!-- main page-->
     <div id="centerViewPort">
         <div id="bannerDiv">
           <div id="bannerText">Baby Name Generator</div>
@@ -98,7 +99,7 @@
             </label>
           </div>
           <br>
-          <div id="buttonWrapper">
+          <div class="buttonWrapper">
             <button class="modalButtons" id="cancel">Cancel</button>
             <button class="modalButtons" id="submit">Submit</button>
           </div>
@@ -128,6 +129,33 @@
             <button class="modalButtons" id="girlDataDelete">Delete</button>
             <button class="modalButtons" id="girlDataEdit">Edit</button>
           </span>
+        </div>
+      </div>
+      
+      <!-- Modal for login screen -->
+      <div class="loginModal">
+        <div class="loginModal-content">
+          <h2 id="loginDescription">Login</h2>
+          <div>
+            <label for="inputName">
+              E-mail Address: <input type="email" id="userName" class="formLayout" required>
+            </label>
+          </div>
+          <br>
+          <div>
+            <label for="password">
+              Password: <input type="password" id="password" class="formLayout" required>
+            </label>
+          </div>
+          <br>
+          <div class="buttonWrapper">
+            <button class="modalButtons" id="loginBtn">Login</button>
+          </div>
+          <br>
+          <hr>
+          <div id="newUserDiv">
+            <button id="newUserBtn">New User</button>
+          </div>
         </div>
       </div>
 
