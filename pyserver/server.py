@@ -16,6 +16,41 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
+    def handleNamesRetrieveCollection(self, gender, fav):
+        # send_response(status code, )
+        self.send_response(200)
+        # send the header data send_header(key, value)
+        self.send_header("Content-Type", "application/json")
+        # have to call end_headers to finish the response
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        # send body
+        db = NamesDB()
+        names = db.getNames(gender, fav)
+        self.wfile.write(bytes(json.dumps(names), "utf-8"))
+
+    def handleNamesRetrieveMember(self):
+        #print(self.path)
+        parts = self.path.split("/")
+        nameID = parts[-1]
+        db = NamesDB()
+        name = db.getOneName(nameID)
+        if name != None:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(bytes(json.dumps(name), "utf-8"))
+        else:
+            self.send404()
+
+    def send404(self):
+        print(self.path)
+        self.send_response(404)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
+
     def do_GET(self):
         # print("The PATH is:", self.path )
         #files = ["/index.html", "/style.css", "/app.js", "/background.jpg"]
@@ -98,6 +133,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         elif self.path == "/favGirlNames":
             self.handleCreateName()
 
+        # elif self.path == "/newName":
+        #     self.handleCreateName()
+
         else:
             self.send404()
 
@@ -118,8 +156,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-    
-    # helper functions for the routing methods
     def handleCreateName(self):
         length = self.headers["Content-Length"]
         # read the body (data)
@@ -164,42 +200,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
         else:
             self.send404()
-            
-    def handleNamesRetrieveCollection(self, gender, fav):
-        # send_response(status code, )
-        self.send_response(200)
-        # send the header data send_header(key, value)
-        self.send_header("Content-Type", "application/json")
-        # have to call end_headers to finish the response
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        # send body
-        db = NamesDB()
-        names = db.getNames(gender, fav)
-        self.wfile.write(bytes(json.dumps(names), "utf-8"))
-
-    def handleNamesRetrieveMember(self):
-        #print(self.path)
-        parts = self.path.split("/")
-        nameID = parts[-1]
-        db = NamesDB()
-        name = db.getOneName(nameID)
-        if name != None:
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(bytes(json.dumps(name), "utf-8"))
-        else:
-            self.send404()
-
-    def send404(self):
-        print(self.path)
-        self.send_response(404)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.end_headers()
-        self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
-        
 
 def run():
     try:

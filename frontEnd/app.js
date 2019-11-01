@@ -34,14 +34,16 @@ var cancelBtn = document.querySelector("#cancel")
 
 var submitBtn = document.querySelector("#submit");
 
+//TODO: Make this work once registration is done
 var loginBtn = document.querySelector("#loginBtn");
 loginBtn.onclick = function (){closeModals();};
 
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
-  document.querySelector(".registrationModal").style.display = "block";
-  document.querySelector(".loginModal").style.display = "none";
-};
+  closeModals();
+  var regModal = document.querySelector("#registrationModal");
+  regModal.style.display = "block";
+}
 
 // function to display random name on button click
 boyButton.onclick = function () {

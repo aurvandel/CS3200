@@ -415,7 +415,7 @@ label {
   width: 200px;
 }
 
-#loginDescription {
+.centerDescription {
   text-align: center;
 }
 
@@ -442,30 +442,25 @@ TODO: Change this to JS so that the text changes to "Sign up" on hover
 */
 #newUserBtn:hover {color: red;}
 
-#userName, #password {
-  width: 175px;
-}
-
-.registrationModal {
+#registrationModal {
   display: none;
   position: fixed;
-  padding-top: 50px;
+  padding-top: 100px;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #DCDCDC;
 }
 
-.registrationModal-content {
+#registrationModal-content {
   border: 5px solid #86a6b3;
   border-radius: 5px;
   position: relative;
   background-image: linear-gradient(#86a6b3, pink);
   padding: 20px;
   margin: auto;
-  width: 35%;
+  width: 200px;
   animation-name: animatetop;
   animation-duration: 0.4s
 }

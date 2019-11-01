@@ -39,8 +39,8 @@
             </div>
           </div>
         </div>
-
-
+      </div>
+      
       <!-- Slide out for favorite boy list -->
       <div id="slideoutBoy">
         <span>Favorite Boy Names</span>
@@ -48,7 +48,7 @@
           <ul class="pointer" id="favBoyList"></ul>
         </div>
       </div>
-
+      
       <!-- Slide out for favorite girl list -->
       <div id="slideoutGirl">
         <span>Favorite Girl Names</span>
@@ -118,7 +118,7 @@
           </span>
         </div>
       </div>
-
+      
       <!-- Modal to display data about the girl names -->
       <div id="girlNameData">
         <div>
@@ -131,21 +131,20 @@
           </span>
         </div>
       </div>
-
+      
       <!-- Modal for login screen -->
       <div class="loginModal">
         <div class="loginModal-content">
-          <h2 id="loginDescription">Sign In</h2>
-          <hr>
+          <h2 class="centerDescription">Login</h2>
           <div>
             <label for="inputUserName">
-              E-mail Address: <input type="email" id="inputUserName" class="formLayout" required>
+              Username: <input type="text" id="inputUserName" class="formLayout" required>
             </label>
           </div>
           <br>
           <div>
-            <label for="inputPassword">
-              Password: <input type="password" id="inputPassword" class="formLayout" required>
+            <label for="password">
+              Password: <input type="password" id="password" class="formLayout" required>
             </label>
           </div>
           <br>
@@ -159,15 +158,15 @@
           </div>
         </div>
       </div>
-
+      
 <!--
       Working on this
 -->
       <!-- Modal for registration -->
-      <div class="registrationModal">
-        <div class="registrationModal-content">
+      <div id="registrationModal">
+        <div id="registrationModal-content">
           <span class="close-btn">&times;</span>
-          <h2>Registration</h2>
+          <h2 class="centerDescription">Registration</h2>
           <div>
             <label for="inputFirstName">
               First Name: <input type="text" id="inputFirstName" class="formLayout" required>
@@ -181,8 +180,8 @@
           </div>
           <br>
           <div>
-            <label for="inputEmail">
-              Email Address: <input type="email" id="inputEmail" class="formLayout">
+            <label for="inputNewEmail">
+              Email Address: <input type="email" id="inputNewEmail" class="formLayout">
             </label>
           </div>
           <br>
@@ -198,8 +197,6 @@
           </div>
         </div>
       </div>
-    </div>
-    
 
     <script type="text/javascript" src="app.js"></script>
   </body>
