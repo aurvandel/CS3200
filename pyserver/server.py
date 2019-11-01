@@ -3,9 +3,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
-from namesDB import NamesDB
+from os import curdir, sep
 
-#TODO: Test 404 errors with postman
+from namesDB import NamesDB
 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
@@ -53,6 +53,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # print("The PATH is:", self.path )
+        #files = ["/index.html", "/style.css", "/app.js", "/background.jpg"]
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
@@ -72,9 +73,51 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path.startswith("/favGirlNames/"):
             self.handleNamesRetrieveMember()
-
+            
         else:
             self.send404()
+            
+        '''
+        elif self.path in files:
+            """Handles routing for the application's entry point'"""
+			
+            try:
+                #Check the file extension required and
+                #set the right mime type
+
+                sendReply = False
+                if self.path.endswith(".html"):
+                    mimetype='text/html'
+                    sendReply = True
+                if self.path.endswith(".jpg"):
+                    mimetype='image/jpg'
+                    sendReply = True
+                if self.path.endswith(".gif"):
+                    mimetype='image/gif'
+                    sendReply = True
+                if self.path.endswith(".js"):
+                    mimetype='application/javascript'
+                    sendReply = True
+                if self.path.endswith(".css"):
+                    mimetype='text/css'
+                    sendReply = True
+
+                if sendReply == True:
+                    #Open the static file requested and send it
+                    filename = "../frontEnd" + self.path 
+                    f = open(filename) 
+                    self.send_response(200)
+                    self.send_header('Content-type',mimetype)
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(bytes(f.read(), "utf-8"))
+                    f.close()
+                    
+                return
+
+            except IOError:
+                self.send404
+            '''
 
     def do_PUT(self):
         if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
@@ -158,18 +201,23 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-
 def run():
-    #listen(local IP, port)
-    listen = ('127.0.0.1', 8080)
-    #instatiate class to start HTTPServer
-    #HTTPServer(listen object, RequestHandler Class(Not an object))
-    server = HTTPServer(listen, MyRequestHandler)
+    try:
+        #listen(local IP, port)
+        listen = ('127.0.0.1', 8080)
+        #listen = ('192.168.2.3', 8080)
+        #instatiate class to start HTTPServer
+        #HTTPServer(listen object, RequestHandler Class(Not an object))
+        server = HTTPServer(listen, MyRequestHandler)
 
-    #Make sure we know that the server is running
-    print("Listening....")
-    #Tell the server to run
-    server.serve_forever()
+        #Make sure we know that the server is running
+        print("Listening....")
+        #Tell the server to run
+        server.serve_forever()
+        
+    except KeyboardInterrupt:
+        print(' received, shutting down the web server')
+        server.socket.close()
 
 
 run()

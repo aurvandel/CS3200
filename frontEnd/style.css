@@ -385,10 +385,59 @@ label {
   background-position: right center;
 }
 
-#buttonWrapper {
+.buttonWrapper {
   overflow: hidden;
 }
 
 .pointer {
   cursor: pointer;
 }
+
+/*Styling for modal*/
+.loginModal {
+  display: block;
+  position: fixed;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #DCDCDC;
+}
+
+.loginModal-content {
+  border: 5px solid #86a6b3;
+  border-radius: 5px;
+  position: relative;
+  background-image: linear-gradient(#86a6b3, pink);
+  padding: 20px;
+  margin: auto;
+  width: 200px;
+}
+
+#loginDescription {
+  text-align: center;
+}
+
+#loginBtn {
+  width: 190px;
+  text-align: center;
+  float: none;
+  margin: 0 auto;
+}
+
+#newUserBtn {
+  border: none;
+  background-color: inherit;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+
+/*
+TODO: Change this to JS so that the text changes to "Sign up" on hover
+*/
+#newUserBtn:hover {color: red;}
