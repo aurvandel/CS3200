@@ -39,10 +39,10 @@ boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
   boyPick.innerHTML = boyNames[randomBoy].name;
   var path = "http://localhost:8080/favBoyNames/" + boyNames[randomBoy].id;
-  
+
   //hover listener for name
   boyPick.addEventListener("click", function (item) {
-    mouseOverListener(boyNames[randomBoy].name, item, boyNameDataModal, 
+    mouseOverListener(boyNames[randomBoy].name, item, boyNameDataModal,
     path, boyNameDataDiv, "#boyNameDataName");
     clearList(boyNameDataDiv)
   });
@@ -55,9 +55,9 @@ boyButton.onclick = function () {
   var boyHistoryList = document.querySelector("#boyNameList");
   var newBoyListItem = document.createElement("li");
   newBoyListItem.innerHTML = boyNames[randomBoy].name;
-  
+
   // click listener to move name to favorites list
-  newBoyListItem.addEventListener("click", function (item) { 
+  newBoyListItem.addEventListener("click", function (item) {
     clickListenerMove(boyNames[randomBoy], path,);
     item.target.remove();
   });
@@ -102,7 +102,7 @@ function mouseOverListener(name, item, nameDataModal, path, nameDataDiv, dataMod
         if(confirm("Are you sure you want to delete " + data.name + "?")) {
           deleteName(path);
         }
-      
+
       };
       //deleteBtn.remove();
       //editBtn.remove();
@@ -111,7 +111,7 @@ function mouseOverListener(name, item, nameDataModal, path, nameDataDiv, dataMod
     var tgt = item.target;
     tgt.style.color = "red";
     nameDataModal.style.visibility = "visible";
-    
+
 
   });
 }
@@ -125,29 +125,29 @@ function mouseOutListener(item) {
 girlButton.onclick = function () {
     var randomGirl = Math.floor(Math.random() * girlNames.length)
     girlPick.innerHTML = girlNames[randomGirl].name;
-    
+
     var path = "http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id;
     //hover listener for name
     girlPick.addEventListener("click", function (item) {
-      mouseOverListener(girlNames[randomGirl].name, item, girlNameDataModal, 
+      mouseOverListener(girlNames[randomGirl].name, item, girlNameDataModal,
       path, girlNameDataDiv, "#girlNameDataName");
     });
     girlPick.addEventListener("mouseout", function(item) {
       mouseOutListener(item);
     });
-  
+
     // place in history list
     var girlHistoryList = document.querySelector("#girlNameList");
     var newListItem = document.createElement("li");
     newListItem.innerHTML = girlNames[randomGirl].name;
-    
-    newListItem.addEventListener("click", function (item) { 
-      clickListenerMove(girlNames[randomGirl], 
+
+    newListItem.addEventListener("click", function (item) {
+      clickListenerMove(girlNames[randomGirl],
         "http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id,
         );
         newListItem.remove();
     });
-  
+
     girlHistoryList.appendChild(newListItem);
 };
 
@@ -431,7 +431,7 @@ function submitName(method, path) {
   // replace the descriptive text on the modal
   document.querySelector("#modalDescription").innerHTML = "Please feel free to add a name to our list";
   // inputField.value to get whatever was typed into field
-  
+
   var newNameInput = document.querySelector("#inputName");
   if (newNameInput.checkValidity()) {
     var newName = newNameInput.value;
@@ -494,11 +494,31 @@ function submitName(method, path) {
     } else {
     alert("Please enter a name");
   }
+  submitBtn.onclick = function () {
+    if (gender == "M") {
+      submitName("POST", "http://localhost:8080/favBoyNames");
+    }
+    if (gender == "F") {
+      submitName("POST", "http://localhost:8080/favGirlNames")
+    }
+  };
 };
 
 
 submitBtn.onclick = function () {
-  submitName("POST", "http://localhost:8080/newName");
+  var newGenderInputs = document.getElementsByName('inputGender');
+  for(i = 0; i < newGenderInputs.length; i++) {
+    if(newGenderInputs[i].checked) {
+      var newGender = newGenderInputs[i].value;
+    }
+  }
+
+   if (newGender == "M") {
+     submitName("POST", "http://localhost:8080/favBoyNames");
+   }
+   if (newGender == "F") {
+     submitName("POST", "http://localhost:8080/favGirlNames")
+   }
 };
 
 function clearInputs () {

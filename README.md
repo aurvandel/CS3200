@@ -28,11 +28,11 @@ fav INTEGER DEFAULT 0);
 
 ## REST Endpoints
 
-Name                           			| Method | Path
+Name                           		    	| Method | Path
 ----------------------------------------|--------|------------------
-Retrieve girl names collection 			| GET    | /girlNames
+Retrieve girl names collection 			    | GET    | /girlNames
 Retrieve favorite girl names collection | GET    | /favGirlNames
-Retrieve boy names collection 			| GET    | /boyNames
+Retrieve boy names collection 			    | GET    | /boyNames
 Retrieve favorite boy names collection	| GET    | /favBoyNames
 Retrieve favorite boy name member       | GET    | /favBoyNames/*\<id\>*
 Retrieve favorite girl name member      | GET    | /favGirlNames/*\<id\>*

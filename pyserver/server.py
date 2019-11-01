@@ -90,8 +90,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         elif self.path == "/favGirlNames":
             self.handleCreateName()
 
-        elif self.path == "/newName":
-            self.handleCreateName()
+        # elif self.path == "/newName":
+        #     self.handleCreateName()
 
         else:
             self.send404()
@@ -147,13 +147,16 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         origin = parsed_body["origin"][0]
         fav = parsed_body["fav"][0]
         db = NamesDB()
-        db.updateName(nameID, name, gender, n, rank, origin, fav)
+        nameFound = db.getOneName(nameID)
+        if nameFound != None:
+            db.updateName(nameID, name, gender, n, rank, origin, fav)
 
-        # respond to the client
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-
+            # respond to the client
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+        else:
+            self.send404()
 
 
 def run():
