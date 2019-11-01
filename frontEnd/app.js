@@ -39,8 +39,9 @@ loginBtn.onclick = function (){closeModals();};
 
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
-    
-}
+  document.querySelector(".registrationModal").style.display = "block";
+  document.querySelector(".loginModal").style.display = "none";
+};
 
 // function to display random name on button click
 boyButton.onclick = function () {
