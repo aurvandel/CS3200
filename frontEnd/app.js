@@ -34,6 +34,14 @@ var cancelBtn = document.querySelector("#cancel")
 
 var submitBtn = document.querySelector("#submit");
 
+var loginBtn = document.querySelector("#loginBtn");
+loginBtn.onclick = function (){closeModals();};
+
+var newUserBtn = document.querySelector("#newUserBtn");
+newUserBtn.onclick = function () {
+    
+}
+
 // function to display random name on button click
 boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
@@ -515,6 +523,7 @@ function clearInputs () {
 function closeModals () {
   boyNameDataModal.style.visibility = "hidden";
   girlNameDataModal.style.visibility = "hidden";
+  document.querySelector(".loginModal").style.display = "none";
 };
 
 function deleteName(path) {

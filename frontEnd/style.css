@@ -437,4 +437,7 @@ label {
   display: block;
 }
 
+/*
+TODO: Change this to JS so that the text changes to "Sign up" on hover
+*/
 #newUserBtn:hover {color: red;}
