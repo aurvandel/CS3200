@@ -49,3 +49,8 @@ class NamesDB:
         data = [name, gender, n, rank, origin, fav, id]
         self.cursor.execute("UPDATE baby_names SET name=?, gender=?, n=?, rank=?, origin=?, fav=? WHERE id=?", data)
         self.connection.commit()
+
+    def insertUser(self, fname, lname, email, encryptedPassword):
+        data = [lname, fname, email, encryptedPassword]
+        self.cursor.execute("INSERT INTO users (last_name, first_name, email, encrypted_password) VALUES (?,?,?,?)", data)
+        self.connection.commit()
