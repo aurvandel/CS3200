@@ -21,6 +21,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # print("The PATH is:", self.path )
         #files = ["/index.html", "/style.css", "/app.js", "/background.jpg"]
 
+
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
 
@@ -130,13 +131,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         lname = parsed_body["lname"][0]
         email = parsed_body["email"][0]
         password = parsed_body["password"][0]
-        
+
         # Encrypt the password
         encryptedPassword = bcrypt.hash(password)
-        
+
         db = NamesDB()
         db.insertUser(fname, lname, email, encryptedPassword)
-        
+
         self.send_response(201)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()

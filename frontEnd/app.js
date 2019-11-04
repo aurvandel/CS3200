@@ -36,7 +36,18 @@ var submitBtn = document.querySelector("#submit");
 
 //TODO: Make this work once registration is done
 var loginBtn = document.querySelector("#loginBtn");
-loginBtn.onclick = function (){closeModals();};
+loginBtn.onclick = function (){
+  var userNameInput = document.querySelector("#inputUserName");
+  var passwordInput = document.querySelector("#password");
+  var username = userNameInput.value;
+  var password = passwordInput.value;
+
+  var body = "username=" + encodeURIComponent(username) +
+    "&password=" + encodeURIComponent(password);
+
+  //TODO fetch function
+  closeModals();
+};
 
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
@@ -126,7 +137,6 @@ function mouseOverListener(name, item, nameDataModal, path, nameDataDiv, dataMod
 
   });
 }
-
 
 function mouseOutListener(item) {
   item.target.style.color = "black";
@@ -308,7 +318,6 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
   });
 }
 
-
 function refreshFavorites () {
   fetchFavorites("http://localhost:8080/favBoyNames", "#favBoyList",
   "#boyNameDataName", boyNameDataModal, boyNameDataDiv);
@@ -327,7 +336,6 @@ fetch("http://localhost:8080/girlNames").then(function (response) {
     girlNames = data;
     });
   });
-
 
 addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
@@ -355,7 +363,6 @@ addBoy.onclick = function () {
   newBoyInput.value = "";
 };
 
-
 addGirl.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newGirlInput = document.querySelector("#newGirlName");
@@ -381,7 +388,6 @@ addGirl.onclick = function () {
   });
   newGirlInput.value = "";
 };
-
 
 modalBtn.onclick = function(){
   clearInputs ();
@@ -521,57 +527,49 @@ submitRegBtn.onclick = function () {
   var inputLastName = document.querySelector("#inputLastName");
   var inputEmail = document.querySelector("#inputNewEmail");
   var inputPassword = document.querySelector("#inputNewPassword");
-  
-  //~ if (inputFirstName.checkValidity()) {
-    //~ var firstName = inputFirstName.value;
-  //~ } else {failedValidation("first name")}
-  //~ if (inputLastName.checkValidity()) {
-    //~ var lastName = inputLastName.value;
-  //~ } else {failedValidation("last name")}
-  //~ if (inputEmail.checkValidity()) {
-    //~ var email = inputEmail.value;
-  //~ } else {failedValidation("email address")}
-  //~ if (inputPassword.checkValidity()) {
-    //~ var password = inputPassword.value;
-  //~ } else {failedValidation("password")}
-  
 
-  var firstName = inputFirstName.value;
-  var lastName = inputLastName.value;
-  var email = inputEmail.value;
-  var password = inputPassword.value;
-  
+  if (inputFirstName.checkValidity()) {
+    var firstName = inputFirstName.value;
+  } else {failedValidation("first name")}
+  if (inputLastName.checkValidity()) {
+    var lastName = inputLastName.value;
+  } else {failedValidation("last name")}
+  if (inputEmail.checkValidity()) {
+    var email = inputEmail.value;
+  } else {failedValidation("email address")}
+  if (inputPassword.checkValidity()) {
+    var password = inputPassword.value;
+  } else {failedValidation("password")}
+
   //encodes any special characters
   var body = "fname=" + encodeURIComponent(firstName) +
   "&lname=" + encodeURIComponent(lastName) +
   "&email=" + encodeURIComponent(email) +
   "&password=" + encodeURIComponent(password);
-  
-  console.log(body);
-  
+
   fetch("http://localhost:8080/users", {
   method: "POST",
   body: body,
   headers: {
     "Content-Type": "application/x-www-form-urlencoded"
   }
-}).then(function (response) {
-  // call function to do the GET request
+  }).then(function (response) {
+    // call function to do the GET request
 
-  adocument.querySelector("#registrationModal").style.display = "none";
-  adocument.querySelector(".loginModal").style.display = "block";
+    document.querySelector("#registrationModal").style.display = "none";
+    document.querySelector(".loginModal").style.display = "block";
 
-  // clear the text boxes
-  inputFirstName.value = "";
-  inputLastName.value = "";
-  inputEmail.value = "";
-  inputPassword.value = ""; 
-});
-}
+    // clear the text boxes
+    inputFirstName.value = "";
+    inputLastName.value = "";
+    inputEmail.value = "";
+    inputPassword.value = "";
+  });
+};
 
 function failedValidation (err) {
   alert("Please enter a valid " + err );
-}
+};
 
 submitBtn.onclick = function () {
   var newGenderInputs = document.getElementsByName('inputGender');

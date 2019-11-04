@@ -54,3 +54,9 @@ class NamesDB:
         data = [lname, fname, email, encryptedPassword]
         self.cursor.execute("INSERT INTO users (last_name, first_name, email, encrypted_password) VALUES (?,?,?,?)", data)
         self.connection.commit()
+
+    def getOneUser(self, email):
+        data = [email]
+        self.cursor.execute("SELECT * FROM users WHERE email = ?", data)
+        result = self.cursor.fetchone()
+        return result
