@@ -102,6 +102,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path == "/users":
             self.handleCreateUser()
+            
+        elif self.path == "/sessions":
+            self.handleCreateSession()
 
         else:
             self.send404()
@@ -123,6 +126,25 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
+    def handleCreateSession(self):
+        length = self.headers["Content-Length"]
+        body = self.rfile.read(int(length)).decode("utf-8")
+        parsed_body = parse_qs(body)        #decodes encoded data
+        username = parsed_body["username"][0]
+        password = parsed_body["password"][0]
+        db = NamesDB()
+        userFound = db.getOneUser(username)
+        if userFound != None:
+            verified = bcrypt.verify(password, userFound["encrypted_password"])
+            if verified:
+                self.send_response(201)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+            else:
+                self.handle401()
+        else:
+            self.handle401()
+                  
     def handleCreateUser(self):
         length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
@@ -221,6 +243,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
+        
+    def handle401(self):
+        self.send_response(401)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(bytes("Invalid username or password", "utf-8"))
 
 
 def run():

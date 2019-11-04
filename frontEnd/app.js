@@ -34,7 +34,6 @@ var cancelBtn = document.querySelector("#cancel")
 
 var submitBtn = document.querySelector("#submit");
 
-//TODO: Make this work once registration is done
 var loginBtn = document.querySelector("#loginBtn");
 loginBtn.onclick = function (){
   var userNameInput = document.querySelector("#inputUserName");
@@ -45,8 +44,23 @@ loginBtn.onclick = function (){
   var body = "username=" + encodeURIComponent(username) +
     "&password=" + encodeURIComponent(password);
 
-  //TODO fetch function
-  closeModals();
+    fetch("http://localhost:8080/sessions", {
+  method: "POST",
+  body: body,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+  }).then(function (response) {
+    if (response.status == 401) {
+      alert("invalid username or password");
+    } else if (response.status == 201) {
+      closeModals();
+    }
+
+    // clear the text boxes
+    userNameInput.value = "";
+    passwordInput.value = "";
+  });
 };
 
 var newUserBtn = document.querySelector("#newUserBtn");
