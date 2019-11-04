@@ -3,6 +3,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
+from passlib.hash import bcrypt
 #from os import curdir, sep
 
 from namesDB import NamesDB
@@ -121,11 +122,24 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-    def handleCreatUser(self):
-        length = self.headers["Conent-Length"]
+    def handleCreateUser(self):
+        length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
         parsed_body = parse_qs(body)        #decodes encoded data
-        print(parsed_body)
+        fname = parsed_body["fname"][0]
+        lname = parsed_body["lname"][0]
+        email = parsed_body["email"][0]
+        password = parsed_body["password"][0]
+        
+        # Encrypt the password
+        encryptedPassword = bcrypt.hash(password)
+        
+        db = NamesDB()
+        db.insertUser(fname, lname, email, encryptedPassword)
+        
+        self.send_response(201)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
 
     def handleCreateName(self):
         length = self.headers["Content-Length"]

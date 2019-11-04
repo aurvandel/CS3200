@@ -515,6 +515,63 @@ function submitName(method, path) {
   };
 };
 
+var submitRegBtn = document.querySelector("#submitReg");
+submitRegBtn.onclick = function () {
+  var inputFirstName = document.querySelector("#inputFirstName");
+  var inputLastName = document.querySelector("#inputLastName");
+  var inputEmail = document.querySelector("#inputNewEmail");
+  var inputPassword = document.querySelector("#inputNewPassword");
+  
+  //~ if (inputFirstName.checkValidity()) {
+    //~ var firstName = inputFirstName.value;
+  //~ } else {failedValidation("first name")}
+  //~ if (inputLastName.checkValidity()) {
+    //~ var lastName = inputLastName.value;
+  //~ } else {failedValidation("last name")}
+  //~ if (inputEmail.checkValidity()) {
+    //~ var email = inputEmail.value;
+  //~ } else {failedValidation("email address")}
+  //~ if (inputPassword.checkValidity()) {
+    //~ var password = inputPassword.value;
+  //~ } else {failedValidation("password")}
+  
+
+  var firstName = inputFirstName.value;
+  var lastName = inputLastName.value;
+  var email = inputEmail.value;
+  var password = inputPassword.value;
+  
+  //encodes any special characters
+  var body = "fname=" + encodeURIComponent(firstName) +
+  "&lname=" + encodeURIComponent(lastName) +
+  "&email=" + encodeURIComponent(email) +
+  "&password=" + encodeURIComponent(password);
+  
+  console.log(body);
+  
+  fetch("http://localhost:8080/users", {
+  method: "POST",
+  body: body,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+}).then(function (response) {
+  // call function to do the GET request
+
+  adocument.querySelector("#registrationModal").style.display = "none";
+  adocument.querySelector(".loginModal").style.display = "block";
+
+  // clear the text boxes
+  inputFirstName.value = "";
+  inputLastName.value = "";
+  inputEmail.value = "";
+  inputPassword.value = ""; 
+});
+}
+
+function failedValidation (err) {
+  alert("Please enter a valid " + err );
+}
 
 submitBtn.onclick = function () {
   var newGenderInputs = document.getElementsByName('inputGender');
