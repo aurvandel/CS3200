@@ -18,9 +18,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        # print("The PATH is:", self.path )
         #files = ["/index.html", "/style.css", "/app.js", "/background.jpg"]
-
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
@@ -111,18 +109,21 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_DELETE(self):
         if self.path.startswith("/favGirlNames/") or self.path.startswith("/favBoyNames/"):
-            parts = self.path.split("/")
-            nameID = parts[-1]
-            db = NamesDB()
-            name = db.getOneName(nameID)
-            if name != None:
-                db.deleteOneName(nameID)
-                self.send_response(200)
-                self.send_header("Access-Control-Allow-Origin", "*")
-                self.end_headers()
-            else:
-                self.send404()
+            self.handleDeleteMember()
 
+        else:
+            self.send404()
+            
+    def handleDeleteMember(self):
+        parts = self.path.split("/")
+        nameID = parts[-1]
+        db = NamesDB()
+        name = db.getOneName(nameID)
+        if name != None:
+            db.deleteOneName(nameID)
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
         else:
             self.send404()
 
