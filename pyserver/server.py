@@ -21,6 +21,11 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         for morsel in self.cookie.values():
             self.send_header("Set-Cookie", morsal.OutPutString())
 
+    def load_session(self):
+        # either load session data based on sessionID in cookies
+        # or create a new seesion, sessionID and cookie
+        pass
+
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
