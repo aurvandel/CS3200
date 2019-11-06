@@ -4,11 +4,22 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
 from passlib.hash import bcrypt
+from http import cookies
 #from os import curdir, sep
-
 from namesDB import NamesDB
 
+
 class MyRequestHandler(BaseHTTPRequestHandler):
+
+    def load_cookie(self):
+        if "Cookie" in self.headers:
+            self.cookie = cookies.SimpleCookie(self.headers["Cookie"])
+        else:
+            self.cookie = cookies.SimpleCookie()
+
+    def send_cookie(self):
+        for morsel in self.cookie.values():
+            self.send_header("Set-Cookie", morsal.OutPutString())
 
     def do_OPTIONS(self):
         self.send_response(200)
@@ -22,6 +33,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
+
 
         elif self.path == "/favGirlNames":
             self.handleNamesRetrieveCollection("F", 1)
@@ -42,47 +54,47 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-        '''
-        elif self.path in files:
-            """Handles routing for the application's entry point'"""
-
-            try:
-                #Check the file extension required and
-                #set the right mime type
-
-                sendReply = False
-                if self.path.endswith(".html"):
-                    mimetype='text/html'
-                    sendReply = True
-                if self.path.endswith(".jpg"):
-                    mimetype='image/jpg'
-                    sendReply = True
-                if self.path.endswith(".gif"):
-                    mimetype='image/gif'
-                    sendReply = True
-                if self.path.endswith(".js"):
-                    mimetype='application/javascript'
-                    sendReply = True
-                if self.path.endswith(".css"):
-                    mimetype='text/css'
-                    sendReply = True
-
-                if sendReply == True:
-                    #Open the static file requested and send it
-                    filename = "../frontEnd" + self.path
-                    f = open(filename)
-                    self.send_response(200)
-                    self.send_header('Content-type',mimetype)
-                    self.send_header("Access-Control-Allow-Origin", "*")
-                    self.end_headers()
-                    self.wfile.write(bytes(f.read(), "utf-8"))
-                    f.close()
-
-                return
-
-            except IOError:
-                self.send404
-            '''
+        #
+        # elif self.path in files:
+        #     """Handles routing for the application's entry point'"""
+        #
+        #     try:
+        #         #Check the file extension required and
+        #         #set the right mime type
+        #
+        #         sendReply = False
+        #         if self.path.endswith(".html"):
+        #             mimetype='text/html'
+        #             sendReply = True
+        #         if self.path.endswith(".jpg"):
+        #             mimetype='image/jpg'
+        #             sendReply = True
+        #         if self.path.endswith(".gif"):
+        #             mimetype='image/gif'
+        #             sendReply = True
+        #         if self.path.endswith(".js"):
+        #             mimetype='application/javascript'
+        #             sendReply = True
+        #         if self.path.endswith(".css"):
+        #             mimetype='text/css'
+        #             sendReply = True
+        #
+        #         if sendReply == True:
+        #             #Open the static file requested and send it
+        #             filename = "../frontEnd" + self.path
+        #             f = open(filename)
+        #             self.send_response(200)
+        #             self.send_header('Content-type',mimetype)
+        #             self.send_header("Access-Control-Allow-Origin", "*")
+        #             self.end_headers()
+        #             self.wfile.write(bytes(f.read(), "utf-8"))
+        #             f.close()
+        #
+        #         return
+        #
+        #     except IOError:
+        #         self.send404
+        #
 
     def do_PUT(self):
         if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
@@ -100,7 +112,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path == "/users":
             self.handleCreateUser()
-            
+
         elif self.path == "/sessions":
             self.handleCreateSession()
 
@@ -113,7 +125,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         else:
             self.send404()
-            
+
     def handleDeleteMember(self):
         parts = self.path.split("/")
         nameID = parts[-1]
@@ -145,7 +157,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
                 self.handle401()
         else:
             self.handle401()
-                  
+
     def handleCreateUser(self):
         length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
@@ -244,7 +256,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(bytes("Unable to locate " + self.path, "utf-8"))
-        
+
     def handle401(self):
         self.send_response(401)
         self.send_header("Access-Control-Allow-Origin", "*")
