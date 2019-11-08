@@ -7,8 +7,12 @@ from passlib.hash import bcrypt
 from http import cookies
 #from os import curdir, sep
 from namesDB import NamesDB
+from session_store import SessionStore
 
+SESSION_STORE = SessionStore()      # has to outlive a request so it's global
 
+# TODO: overide send_headers to add cors and send_cookie
+# TODO: 
 class MyRequestHandler(BaseHTTPRequestHandler):
 
     def load_cookie(self):
@@ -21,12 +25,32 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         for morsel in self.cookie.values():
             self.send_header("Set-Cookie", morsal.OutPutString())
 
+    # load session into self.session
     def load_session(self):
-        # either load session data based on sessionID in cookies
-        # or create a new seesion, sessionID and cookie
-        pass
+        self.load_cookie()
+        # if session id is in cookie
+        if "sessionID" in self.cookie:
+            #if session id in SessionStore
+            sessionID = self.cookie["sessionID"].values
+            # save the session for use later
+            self.session = SESSION_STORE.getSession(sessionID)
+            # if sessioid not is session store
+            if self.session == None:
+                # create new sessionID
+                sessionID = SESSION_STORE.createSession()
+                self.session = SESSION_STORE.getSession(sessionID)
+                # put it in cookie
+                self.cookie["sessionID"] = sessionID
+        #otherwise, if sesion id is not in cookie
+        else:
+            #create a new sessions
+            sessionID = SESSION_STORE.createSession()
+            self.session = SESSION_STORE.getSession(sessionID)
+            #set the new sesion id into the cookies
+            self.cookie["sessionID"] = sessionID
 
     def do_OPTIONS(self):
+        self.load_cookie()
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -34,7 +58,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        #files = ["/index.html", "/style.css", "/app.js", "/background.jpg"]
+        self.load_cookie()
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
@@ -59,49 +83,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-        #
-        # elif self.path in files:
-        #     """Handles routing for the application's entry point'"""
-        #
-        #     try:
-        #         #Check the file extension required and
-        #         #set the right mime type
-        #
-        #         sendReply = False
-        #         if self.path.endswith(".html"):
-        #             mimetype='text/html'
-        #             sendReply = True
-        #         if self.path.endswith(".jpg"):
-        #             mimetype='image/jpg'
-        #             sendReply = True
-        #         if self.path.endswith(".gif"):
-        #             mimetype='image/gif'
-        #             sendReply = True
-        #         if self.path.endswith(".js"):
-        #             mimetype='application/javascript'
-        #             sendReply = True
-        #         if self.path.endswith(".css"):
-        #             mimetype='text/css'
-        #             sendReply = True
-        #
-        #         if sendReply == True:
-        #             #Open the static file requested and send it
-        #             filename = "../frontEnd" + self.path
-        #             f = open(filename)
-        #             self.send_response(200)
-        #             self.send_header('Content-type',mimetype)
-        #             self.send_header("Access-Control-Allow-Origin", "*")
-        #             self.end_headers()
-        #             self.wfile.write(bytes(f.read(), "utf-8"))
-        #             f.close()
-        #
-        #         return
-        #
-        #     except IOError:
-        #         self.send404
-        #
-
     def do_PUT(self):
+        self.load_cookie()
         if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
             self.handleUpdateName()
 
@@ -109,6 +92,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_POST(self):
+        self.load_cookie()
         if self.path == "/favBoyNames":
             self.handleCreateName()
 
@@ -125,6 +109,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_DELETE(self):
+        self.load_cookie()
         if self.path.startswith("/favGirlNames/") or self.path.startswith("/favBoyNames/"):
             self.handleDeleteMember()
 

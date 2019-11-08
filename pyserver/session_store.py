@@ -8,6 +8,7 @@ class SessionStore:
     def createSession(self):
         newSessionID = self.generateSessionId()
         self.sessions[newSessionID] = {}        # starts empty file folder
+        return newSessionID
 
     def getSession(self, sessionID):
         if sessionID in self.sessions:
@@ -19,4 +20,3 @@ class SessionStore:
         rnum = os.urandom(32)                   # more random number generator
         rstr = base64.b64encode(rnum).decode("utf-8")  # convert to b64 to shorten string
         return rstr
-        
