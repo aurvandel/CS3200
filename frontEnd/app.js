@@ -414,6 +414,12 @@ function submitName(method, path) {
 
 // onclick functions
 
+var openLogin = document.querySelector("#openLoginBtn");
+openLogin.onclick = function () {
+  console.log("clicked")
+  document.querySelector(".loginModal").style.display = "block";
+}
+
 var loginBtn = document.querySelector("#loginBtn");
 loginBtn.onclick = function (){
   var userNameInput = document.querySelector("#inputUserName");
