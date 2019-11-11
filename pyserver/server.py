@@ -12,8 +12,14 @@ from session_store import SessionStore
 SESSION_STORE = SessionStore()      # has to outlive a request so it's global
 
 # TODO: overide send_headers to add cors and send_cookie
-# TODO: 
+# TODO:
 class MyRequestHandler(BaseHTTPRequestHandler):
+
+    def end_headers(self):
+        self.send_cookie()
+        self.send_header("Access-Control-Allow-Origin", self.headers["Origin"])
+        self.send_header("Access-Control-Allow-Credentials", "true")
+        BaseHTTPRequestHandler.end_headers(self)
 
     def load_cookie(self):
         if "Cookie" in self.headers:
@@ -52,7 +58,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.load_cookie()
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
@@ -117,6 +122,11 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def handleDeleteMember(self):
+        # Add this to all the methods I don't want to be allowed
+        if "userID" not in self.session:
+            self.handle401()
+            return
+
         parts = self.path.split("/")
         nameID = parts[-1]
         db = NamesDB()
@@ -124,7 +134,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if name != None:
             db.deleteOneName(nameID)
             self.send_response(200)
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
         else:
             self.send404()
@@ -140,8 +149,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if userFound != None:
             verified = bcrypt.verify(password, userFound["encrypted_password"])
             if verified:
+                self.session["userID"] = userFound["id"]
                 self.send_response(201)
-                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
             else:
                 self.handle401()
@@ -164,7 +173,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         db.insertUser(fname, lname, email, encryptedPassword)
 
         self.send_response(201)
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
     def handleCreateName(self):
@@ -184,7 +192,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         # respond to the client
         self.send_response(201)
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
     def handleUpdateName(self):
@@ -207,7 +214,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
             # respond to the client
             self.send_response(200)
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
         else:
             self.send404()
@@ -218,7 +224,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # send the header data send_header(key, value)
         self.send_header("Content-Type", "application/json")
         # have to call end_headers to finish the response
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         # send body
         db = NamesDB()
@@ -234,7 +239,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if name != None:
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(bytes(json.dumps(name), "utf-8"))
         else:
@@ -249,7 +253,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def handle401(self):
         self.send_response(401)
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(bytes("Invalid username or password", "utf-8"))

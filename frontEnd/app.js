@@ -32,11 +32,14 @@ var closeBtn = document.querySelector(".close-btn");
 var cancelBtn = document.querySelector("#cancel");
 var submitBtn = document.querySelector("#submit");
 
+
+
 // Function declerations
 
 // request the data from the server for the complete boy names:
 function getBoyList() {
-  fetch("http://localhost:8080/boyNames").then(function (response) {
+  fetch("http://localhost:8080/boyNames", {
+    credentials: "include"}).then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)
@@ -49,7 +52,8 @@ function getBoyList() {
 
 // request the data from the server for the girl names:
 function getGirlList() {
-  fetch("http://localhost:8080/girlNames").then(function (response) {
+  fetch("http://localhost:8080/girlNames", {
+    credentials: "include"}).then(function (response) {
   // parse (unpackage) the data from the server:
   response.json().then(function (data) {
     // (data is a list of objects)
@@ -63,7 +67,9 @@ function getGirlList() {
 function fetchFavorites (path, favsListEl, dataModalNameEl,
   nameDataModal, nameDataDiv) {
 
-  fetch(path).then(function (response) {
+  fetch(path, {
+    credentials: "include"
+  }).then(function (response) {
     response.json().then(function (data) {
       favNames = data;
       var favList = document.querySelector(favsListEl);
@@ -149,7 +155,9 @@ function refreshFavorites () {
 
 // Moves the random name to the appropriate favorites list
 function mouseOverListener(name, item, nameDataModal, path, nameDataDiv, dataModalNameEl) {
-  fetch(path).then(function(response) {
+  fetch(path, {
+    credentials: "include"
+  }).then(function(response) {
     response.json().then(function(data) {
     // put the name in h3
       document.querySelector(dataModalNameEl).innerHTML = data.name;
@@ -211,6 +219,7 @@ function clickListenerMove (nameObj, path) {
   "&fav=" + encodeURIComponent(1);
   fetch(path, {
     method: "PUT",
+    credentials: "include",
     body: body,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -255,7 +264,9 @@ function closeModals () {
 };
 
 function deleteName(path) {
-  fetch(path, {method: "DELETE"}).then(function() {
+  fetch(path, {
+    method: "DELETE",
+    credentials: "include"}).then(function() {
     // call function to do the GET request
     closeModals();
     refreshFavorites();
@@ -272,7 +283,9 @@ function editName(path) {
   document.querySelector("#modalDescription").innerHTML = "Update Name Data";
 
   // retrieve info from member and put in text boxes
-  fetch(path).then(function(response) {
+  fetch(path, {
+    credentials: "include"
+  }).then(function(response) {
     response.json().then(function(data) {
       var name = document.querySelector("#inputName");
       name.value = data.name;
@@ -386,6 +399,7 @@ function submitName(method, path) {
 
     fetch(path, {
       method: method,
+      credentials: "include",
       body: body,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -432,6 +446,7 @@ loginBtn.onclick = function (){
 
     fetch("http://localhost:8080/sessions", {
   method: "POST",
+  credentials: "include",
   body: body,
   headers: {
     "Content-Type": "application/x-www-form-urlencoded"
@@ -529,6 +544,7 @@ addBoy.onclick = function () {
 
   fetch("http://localhost:8080/favBoyNames", {
     method: "POST",
+    credentials: "include",
     body: body,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -555,6 +571,7 @@ addGirl.onclick = function () {
 
   fetch("http://localhost:8080/favGirlNames", {
     method: "POST",
+    credentials: "include",
     body: body,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -629,6 +646,7 @@ submitRegBtn.onclick = function () {
 
   fetch("http://localhost:8080/users", {
   method: "POST",
+  credentials: "include",
   body: body,
   headers: {
     "Content-Type": "application/x-www-form-urlencoded"
