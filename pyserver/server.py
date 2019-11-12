@@ -149,6 +149,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.handle401()
             return
             
+        # TODO: get user data and pass to client
         self.send_response(201)
         self.end_headers()
         
