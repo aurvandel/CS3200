@@ -60,3 +60,9 @@ class NamesDB:
         self.cursor.execute("SELECT * FROM users WHERE email = ?", data)
         result = self.cursor.fetchone()
         return result
+
+    def getOneUserByID(self, uid):
+        data = [uid]
+        self.cursor.execute("SELECT * FROM users WHERE id = ?", data)
+        result = self.cursor.fetchone()
+        return result

@@ -150,8 +150,12 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             return
             
         # TODO: get user data and pass to client
-        self.send_response(201)
-        self.end_headers()
+        db = NamesDB()
+        user = db.getOneUserByID(self.session["userID"])
+        if user != None:
+            self.send_response(201)
+            self.end_headers()
+            self.wfile.write(bytes(json.dumps(user["first_name"]), "utf-8"))
         
     def handleCreateSession(self):           
         length = self.headers["Content-Length"]

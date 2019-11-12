@@ -475,7 +475,11 @@ function checkSession () {
         refreshFavorites();
         getBoyList();
         getGirlList();
-        document.querySelector("#name").innerHTML = "Welcome " + userInfo;
+        
+        response.json().then(function (data) { 
+          userInfo = data;
+          document.querySelector("#name").innerHTML = "Welcome " + userInfo;
+      });
       } else {
         loginModal.style.display = "block";
       }
