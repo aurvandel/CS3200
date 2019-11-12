@@ -14,9 +14,13 @@ class SessionStore:
         if sessionID in self.sessions:
             return self.sessions[sessionID]
         else:
-            return none
+            return None
 
     def generateSessionId(self):
         rnum = os.urandom(32)                   # more random number generator
         rstr = base64.b64encode(rnum).decode("utf-8")  # convert to b64 to shorten string
         return rstr
+
+    def printStore(self):
+        for k, v in self.sessions.items():
+            print(k, v)

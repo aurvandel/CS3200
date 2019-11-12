@@ -86,7 +86,7 @@ function fetchFavorites (path, favsListEl, dataModalNameEl,
         newTop.addEventListener("click", function(item) {
           clearList(nameDataDiv);
           var memberPath = path + "/" + favName.id;
-          fetch(memberPath).then(function(response) {
+          fetch(memberPath, {credentials: "include"}).then(function(response) {
             response.json().then(function(data) {
             // put the name in h3
               document.querySelector(dataModalNameEl).innerHTML = data.name;
@@ -425,15 +425,6 @@ function submitName(method, path) {
   };
 };
 
-
-// onclick functions
-
-var openLogin = document.querySelector("#openLoginBtn");
-openLogin.onclick = function () {
-  console.log("clicked")
-  document.querySelector(".loginModal").style.display = "block";
-}
-
 var loginBtn = document.querySelector("#loginBtn");
 loginBtn.onclick = function (){
   var userNameInput = document.querySelector("#inputUserName");
@@ -444,7 +435,7 @@ loginBtn.onclick = function (){
   var body = "username=" + encodeURIComponent(username) +
     "&password=" + encodeURIComponent(password);
 
-    fetch("http://localhost:8080/sessions", {
+  fetch("http://localhost:8080/sessions", {
   method: "POST",
   credentials: "include",
   body: body,
@@ -455,6 +446,9 @@ loginBtn.onclick = function (){
     if (response.status == 401) {
       alert("invalid username or password");
     } else if (response.status == 201) {
+      refreshFavorites();
+      getBoyList();
+      getGirlList();
       closeModals();
     }
 
@@ -464,13 +458,30 @@ loginBtn.onclick = function (){
   });
 };
 
+// TODO: see if session exists, if so, then hide login
+function checkSession () {
+  fetch("http://localhost:8080/sessions", {
+    method: "POST", 
+    credentials: "include"}).then(function (response) {
+      if (response.status == 201) {
+        document.querySelector(".loginModal").style.display = "none";
+      }
+  });
+};
+
+//~ checkSession();
+var regModal = document.querySelector("#registrationModal");
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
   closeModals();
-  var regModal = document.querySelector("#registrationModal");
   regModal.style.display = "block";
 }
 
+var cancelRegBtn = document.querySelector("#cancelReg");
+cancelRegBtn.onclick = function () {
+  regModal.style.display = "none";
+  document.querySelector(".loginModal").style.display = "block";
+}
 // function to display random name on button click
 boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
@@ -681,9 +692,7 @@ submitBtn.onclick = function () {
    }
 };
 
-refreshFavorites();
-getBoyList();
-getGirlList();
+
 closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
 closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 

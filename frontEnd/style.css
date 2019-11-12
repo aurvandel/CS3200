@@ -395,7 +395,7 @@ label {
 
 /*Styling for modal*/
 .loginModal {
-  display: none;
+  display: block;
   position: fixed;
   padding-top: 100px;
   left: 0;
@@ -437,6 +437,7 @@ label {
   display: block;
 }
 
+/*
 #openLoginBtn {
   border: none;
   background-color: inherit;
@@ -452,6 +453,7 @@ label {
 #openLoginBtn:hover {
   color: red;
 }
+*/
 
 /*
 TODO: Change this to JS so that the text changes to "Sign up" on hover

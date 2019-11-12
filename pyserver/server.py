@@ -11,8 +11,7 @@ from session_store import SessionStore
 
 SESSION_STORE = SessionStore()      # has to outlive a request so it's global
 
-# TODO: overide send_headers to add cors and send_cookie
-# TODO:
+
 class MyRequestHandler(BaseHTTPRequestHandler):
 
     def end_headers(self):
@@ -29,7 +28,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def send_cookie(self):
         for morsel in self.cookie.values():
-            self.send_header("Set-Cookie", morsal.OutPutString())
+            self.send_header("Set-Cookie", morsel.OutputString())
 
     # load session into self.session
     def load_session(self):
@@ -37,7 +36,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         # if session id is in cookie
         if "sessionID" in self.cookie:
             #if session id in SessionStore
-            sessionID = self.cookie["sessionID"].values
+            sessionID = self.cookie["sessionID"].value
             # save the session for use later
             self.session = SESSION_STORE.getSession(sessionID)
             # if sessioid not is session store
@@ -54,20 +53,20 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.session = SESSION_STORE.getSession(sessionID)
             #set the new sesion id into the cookies
             self.cookie["sessionID"] = sessionID
+        #print("sessionID: ", sessionID)
 
     def do_OPTIONS(self):
-        self.load_cookie()
+        self.load_session()
         self.send_response(200)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
     def do_GET(self):
-        self.load_cookie()
+        self.load_session()
 
         if self.path == "/girlNames":
             self.handleNamesRetrieveCollection('F', 0)
-
 
         elif self.path == "/favGirlNames":
             self.handleNamesRetrieveCollection("F", 1)
@@ -89,7 +88,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_PUT(self):
-        self.load_cookie()
+        self.load_session()
         if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
             self.handleUpdateName()
 
@@ -97,7 +96,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_POST(self):
-        self.load_cookie()
+        self.load_session()
+           
         if self.path == "/favBoyNames":
             self.handleCreateName()
 
@@ -114,13 +114,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def do_DELETE(self):
-        self.load_cookie()
+        self.load_session()
         if self.path.startswith("/favGirlNames/") or self.path.startswith("/favBoyNames/"):
             self.handleDeleteMember()
 
         else:
             self.send404()
-
+       
     def handleDeleteMember(self):
         # Add this to all the methods I don't want to be allowed
         if "userID" not in self.session:
@@ -139,6 +139,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def handleCreateSession(self):
+          
         length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
         parsed_body = parse_qs(body)        #decodes encoded data
@@ -150,6 +151,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             verified = bcrypt.verify(password, userFound["encrypted_password"])
             if verified:
                 self.session["userID"] = userFound["id"]
+                #print(self.session["sessionID"])
                 self.send_response(201)
                 self.end_headers()
             else:
@@ -176,6 +178,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def handleCreateName(self):
+        if "userID" not in self.session:
+            self.handle401()
+            return
+            
         length = self.headers["Content-Length"]
         # read the body (data)
         body = self.rfile.read(int(length)).decode("utf-8")
@@ -189,12 +195,15 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         db = NamesDB()
         db.insertName(name, gender, n, rank, origin, fav)
 
-
         # respond to the client
         self.send_response(201)
         self.end_headers()
 
     def handleUpdateName(self):
+        if "userID" not in self.session:
+            self.handle401()
+            return
+            
         parts = self.path.split("/")
         nameID = parts[-1]
         length = self.headers["Content-Length"]
@@ -219,6 +228,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send404()
 
     def handleNamesRetrieveCollection(self, gender, fav):
+        if "userID" not in self.session:
+            self.handle401()
+            return
+            
         # send_response(status code, )
         self.send_response(200)
         # send the header data send_header(key, value)
@@ -231,6 +244,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(bytes(json.dumps(names), "utf-8"))
 
     def handleNamesRetrieveMember(self):
+        if "userID" not in self.session:
+            self.handle401()
+            return
+            
         #print(self.path)
         parts = self.path.split("/")
         nameID = parts[-1]
@@ -262,7 +279,6 @@ def run():
     try:
         #listen(local IP, port)
         listen = ('127.0.0.1', 8080)
-        #listen = ('192.168.2.3', 8080)
         #instatiate class to start HTTPServer
         #HTTPServer(listen object, RequestHandler Class(Not an object))
         server = HTTPServer(listen, MyRequestHandler)
