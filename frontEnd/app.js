@@ -3,6 +3,7 @@ var boyNames = [];
 var favBoyNames = [];
 var girlNames = [];
 var favGirlNames = [];
+var userInfo;
 
 // query buttons
 var boyButton = document.querySelector("#boyButton");
@@ -450,6 +451,12 @@ loginBtn.onclick = function (){
       getBoyList();
       getGirlList();
       closeModals();
+      
+      response.json().then(function (data) { 
+        userInfo = data;
+        document.querySelector("#name").innerHTML = "Welcome " + userInfo;
+      });
+      
     }
 
     // clear the text boxes
@@ -458,18 +465,23 @@ loginBtn.onclick = function (){
   });
 };
 
-// TODO: see if session exists, if so, then hide login
 function checkSession () {
   fetch("http://localhost:8080/sessions", {
-    method: "POST", 
+    method: "PUT", 
     credentials: "include"}).then(function (response) {
+      var loginModal = document.querySelector(".loginModal");
       if (response.status == 201) {
-        document.querySelector(".loginModal").style.display = "none";
+        loginModal.style.display = "none";
+        refreshFavorites();
+        getBoyList();
+        getGirlList();
+        document.querySelector("#name").innerHTML = "Welcome " + userInfo;
+      } else {
+        loginModal.style.display = "block";
       }
   });
 };
 
-//~ checkSession();
 var regModal = document.querySelector("#registrationModal");
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
@@ -663,16 +675,21 @@ submitRegBtn.onclick = function () {
     "Content-Type": "application/x-www-form-urlencoded"
   }
   }).then(function (response) {
-    // call function to do the GET request
+    // if the user account is created
+    // TODO: Decide how to welcome user after login
+    if (response.status == 201) {
+      document.querySelector("#registrationModal").style.display = "none";
+      document.querySelector(".loginModal").style.display = "block";
 
-    document.querySelector("#registrationModal").style.display = "none";
-    document.querySelector(".loginModal").style.display = "block";
-
-    // clear the text boxes
-    inputFirstName.value = "";
-    inputLastName.value = "";
-    inputEmail.value = "";
-    inputPassword.value = "";
+      // clear the text boxes
+      inputFirstName.value = "";
+      inputLastName.value = "";
+      inputEmail.value = "";
+      inputPassword.value = "";
+      // if the user account already exists
+    } else if (response.status == 400) {
+      alert("Please enter a unique email address");
+    }
   });
 };
 
@@ -696,23 +713,4 @@ submitBtn.onclick = function () {
 closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
 closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
-
-/* Maybe refactor this for another time
-function fetchAll() {
-  fetch("http://localhost:8080/names").then(function (response) {
-    response.json().then(function (names) {
-      console.log(names);
-      names.forEach(function(name) {
-        if (name.gender == "M") {
-          if (name.fav == 1) {
-            favBoyNames.push(name)
-          } else {
-            boyNames.push(name)
-          }
-        }
-
-      });
-    });
-  });
-}
-*/
+checkSession();

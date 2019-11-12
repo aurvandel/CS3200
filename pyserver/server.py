@@ -89,8 +89,14 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         self.load_session()
-        if self.path.startswith("/favBoyNames/") or self.path.startswith("/favGirlNames/"):
+        if self.path.startswith("/favBoyNames/"):
             self.handleUpdateName()
+            
+        elif self.path.startswith("/favGirlNames/"):
+            self.handleUpdateName()
+            
+        elif self.path == "/sessions":
+            self.handleCheckSession()
 
         else:
             self.send404()
@@ -138,8 +144,15 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send404()
 
-    def handleCreateSession(self):
-          
+    def handleCheckSession(self):
+        if "userID" not in self.session:
+            self.handle401()
+            return
+            
+        self.send_response(201)
+        self.end_headers()
+        
+    def handleCreateSession(self):           
         length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
         parsed_body = parse_qs(body)        #decodes encoded data
@@ -151,9 +164,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             verified = bcrypt.verify(password, userFound["encrypted_password"])
             if verified:
                 self.session["userID"] = userFound["id"]
-                #print(self.session["sessionID"])
                 self.send_response(201)
                 self.end_headers()
+                self.wfile.write(bytes(json.dumps(userFound["first_name"]), "utf-8"))
             else:
                 self.handle401()
         else:
@@ -172,10 +185,16 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         encryptedPassword = bcrypt.hash(password)
 
         db = NamesDB()
-        db.insertUser(fname, lname, email, encryptedPassword)
-
-        self.send_response(201)
-        self.end_headers()
+        emailFound = db.getOneUser(email)
+        if nameFound != None:
+            db.insertUser(fname, lname, email, encryptedPassword)
+            self.send_response(201)
+            self.end_headers()
+        else:
+            self.send_response(400)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(bytes("Email address already exists", "utf-8"))
 
     def handleCreateName(self):
         if "userID" not in self.session:
