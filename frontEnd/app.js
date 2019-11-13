@@ -5,9 +5,7 @@ var girlNames = [];
 var favGirlNames = [];
 var userInfo;
 
-// query buttons
-var boyButton = document.querySelector("#boyButton");
-var girlButton = document.querySelector("#girlButton");
+
 
 // query tags for placing HTML
 var boyPick = document.querySelector("#boyName");
@@ -19,20 +17,6 @@ var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
 // Get the list of favorite girl names
 var girlNameDataModal = document.querySelector("#girlNameData");
 var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
-
-// Add a boy name to the favs list
-var addBoy = document.querySelector("#addBoyName");
-
-// Add a girl name to the favs list
-var addGirl = document.querySelector("#addGirlName");
-
-// code for modal input form
-var modalBtn = document.querySelector("#modal-btn");
-var modal = document.querySelector(".inputModal");
-var closeBtn = document.querySelector(".close-btn");
-var cancelBtn = document.querySelector("#cancel");
-var submitBtn = document.querySelector("#submit");
-
 
 
 // Function declerations
@@ -427,6 +411,7 @@ function submitName(method, path) {
   };
 };
 
+// allows user to login
 var loginBtn = document.querySelector("#loginBtn");
 loginBtn.onclick = function (){
   var userNameInput = document.querySelector("#inputUserName");
@@ -466,6 +451,7 @@ loginBtn.onclick = function (){
   });
 };
 
+// runs at page load to check if user is already logged in
 function checkSession () {
   fetch("http://localhost:8080/sessions", {
     method: "PUT", 
@@ -487,6 +473,7 @@ function checkSession () {
   });
 };
 
+// closes login modal and opens registration modal
 var regModal = document.querySelector("#registrationModal");
 var newUserBtn = document.querySelector("#newUserBtn");
 newUserBtn.onclick = function () {
@@ -494,12 +481,16 @@ newUserBtn.onclick = function () {
   regModal.style.display = "block";
 }
 
+// closes registration modal and opens login modal
+// TODO: clear the fields in the reg modal
 var cancelRegBtn = document.querySelector("#cancelReg");
 cancelRegBtn.onclick = function () {
   regModal.style.display = "none";
   document.querySelector(".loginModal").style.display = "block";
 }
+
 // function to display random name on button click
+var boyButton = document.querySelector("#boyButton");
 boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
   boyPick.innerHTML = boyNames[randomBoy].name;
@@ -529,6 +520,8 @@ boyButton.onclick = function () {
   boyHistoryList.appendChild(newBoyListItem);
 };
 
+// displays random girl name
+var girlButton = document.querySelector("#girlButton");
 girlButton.onclick = function () {
     var randomGirl = Math.floor(Math.random() * girlNames.length)
     girlPick.innerHTML = girlNames[randomGirl].name;
@@ -558,6 +551,8 @@ girlButton.onclick = function () {
     girlHistoryList.appendChild(newListItem);
 };
 
+// Add a boy name to the favs list
+var addBoy = document.querySelector("#addBoyName");
 addBoy.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newBoyInput = document.querySelector("#newBoyName");
@@ -585,6 +580,8 @@ addBoy.onclick = function () {
   newBoyInput.value = "";
 };
 
+// Add a girl name to the favs list
+var addGirl = document.querySelector("#addGirlName");
 addGirl.onclick = function () {
   // inputField.value to get whatever was typed into field
   var newGirlInput = document.querySelector("#newGirlName");
@@ -612,6 +609,9 @@ addGirl.onclick = function () {
   newGirlInput.value = "";
 };
 
+// Opens new/edit name modal
+var modal = document.querySelector(".inputModal");
+var modalBtn = document.querySelector("#modal-btn");
 modalBtn.onclick = function(){
   clearInputs ();
   submitBtn.innerHTML = "Submit";
@@ -622,16 +622,21 @@ modalBtn.onclick = function(){
 
 }
 
+// Closes the new/edit name modal
+var closeBtn = document.querySelector(".close-btn");
 closeBtn.onclick = function(){
   modal.style.display = "none"
 }
 
+// Closes and clears the new/edit name modal
+var cancelBtn = document.querySelector("#cancel");
 cancelBtn.onclick = function(){
   modal.style.display = "none";
     // clear the text boxes
   clearInputs ();
 }
 
+// Closes modals if a click occurs outside the modal
 window.onclick = function(e){
 
   if(e.target == modal) {
@@ -646,6 +651,7 @@ window.onclick = function(e){
   //clearInputs ();
 }
 
+// Submits new user reg to db
 var submitRegBtn = document.querySelector("#submitReg");
 submitRegBtn.onclick = function () {
   var inputFirstName = document.querySelector("#inputFirstName");
@@ -698,6 +704,8 @@ submitRegBtn.onclick = function () {
   });
 };
 
+// submits new name to db
+var submitBtn = document.querySelector("#submit");
 submitBtn.onclick = function () {
   var newGenderInputs = document.getElementsByName('inputGender');
   for(i = 0; i < newGenderInputs.length; i++) {
@@ -714,8 +722,9 @@ submitBtn.onclick = function () {
    }
 };
 
+// I don't think these 2 calls need to be run at page load
+//~ closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
+//~ closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
-closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
-closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
-
+// run at page load to check if user is logged in
 checkSession();
