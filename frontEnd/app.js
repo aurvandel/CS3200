@@ -430,12 +430,12 @@ loginBtn.onclick = function (){
       getBoyList();
       getGirlList();
       closeModals();
-      
-      response.json().then(function (data) { 
+
+      response.json().then(function (data) {
         userInfo = data;
         document.querySelector("#name").innerHTML = "Welcome " + userInfo;
       });
-      
+
     }
 
     // clear the text boxes
@@ -447,16 +447,16 @@ loginBtn.onclick = function (){
 // runs at page load to check if user is already logged in
 function checkSession () {
   fetch("http://localhost:8080/sessions", {
-    method: "PUT", 
+    method: "PUT",
     credentials: "include"}).then(function (response) {
       var loginModal = document.querySelector(".loginModal");
-      if (response.status == 201) {
+      if (response.status == 200) {
         loginModal.style.display = "none";
         refreshFavorites();
         getBoyList();
         getGirlList();
-        
-        response.json().then(function (data) { 
+
+        response.json().then(function (data) {
           userInfo = data;
           document.querySelector("#name").innerHTML = "Welcome " + userInfo;
       });
@@ -493,7 +493,7 @@ boyButton.onclick = function () {
   boyPick.addEventListener("click", function (item) {
     mouseOverListener(boyNames[randomBoy].name, item, boyNameDataModal,
     path, boyNameDataDiv, "#boyNameDataName");
-    clearList(boyNameDataDiv)
+    clearList(boyNameDataDiv);
   });
   boyPick.addEventListener("mouseleave", function(item) {
     mouseOutListener(item);
@@ -692,7 +692,7 @@ submitRegBtn.onclick = function () {
       inputEmail.value = "";
       inputPassword.value = "";
       // if the user account already exists
-    } else if (response.status == 400) {
+    } else if (response.status == 422) {
       alert("Please enter a unique email address");
     }
   });
@@ -716,9 +716,9 @@ submitBtn.onclick = function () {
    }
 };
 
-// I don't think these 2 calls need to be run at page load
-//~ closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
-//~ closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
+
+closeDataModal("#boyDataClose", boyNameDataModal, boyNameDataDiv);
+closeDataModal("#girlDataClose", girlNameDataModal, girlNameDataDiv);
 
 // run at page load to check if user is logged in
 checkSession();

@@ -478,3 +478,11 @@ TODO: Change this to JS so that the text changes to "Sign up" on hover
   animation-name: animatetop;
   animation-duration: 0.4s
 }
+
+.loginModal input {
+  width: 170px;
+}
+
+#registrationModal-content input {
+  width: 170px;
+}

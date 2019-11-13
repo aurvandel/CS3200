@@ -91,10 +91,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.load_session()
         if self.path.startswith("/favBoyNames/"):
             self.handleUpdateName()
-            
+
         elif self.path.startswith("/favGirlNames/"):
             self.handleUpdateName()
-            
+
         elif self.path == "/sessions":
             self.handleCheckSession()
 
@@ -103,7 +103,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self.load_session()
-           
+
         if self.path == "/favBoyNames":
             self.handleCreateName()
 
@@ -126,7 +126,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         else:
             self.send404()
-       
+
     def handleDeleteMember(self):
         # Add this to all the methods I don't want to be allowed
         if "userID" not in self.session:
@@ -148,16 +148,16 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if "userID" not in self.session:
             self.handle401()
             return
-            
+
         # TODO: get user data and pass to client
         db = NamesDB()
         user = db.getOneUserByID(self.session["userID"])
         if user != None:
-            self.send_response(201)
+            self.send_response(200)
             self.end_headers()
             self.wfile.write(bytes(json.dumps(user["first_name"]), "utf-8"))
-        
-    def handleCreateSession(self):           
+
+    def handleCreateSession(self):
         length = self.headers["Content-Length"]
         body = self.rfile.read(int(length)).decode("utf-8")
         parsed_body = parse_qs(body)        #decodes encoded data
@@ -190,13 +190,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         encryptedPassword = bcrypt.hash(password)
 
         db = NamesDB()
-        emailFound = db.getOneUser(email)
-        if nameFound != None:
+        user = db.getOneUser(email)
+        if user == None:
             db.insertUser(fname, lname, email, encryptedPassword)
             self.send_response(201)
             self.end_headers()
         else:
-            self.send_response(400)
+            self.send_response(422)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(bytes("Email address already exists", "utf-8"))
@@ -205,7 +205,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if "userID" not in self.session:
             self.handle401()
             return
-            
+
         length = self.headers["Content-Length"]
         # read the body (data)
         body = self.rfile.read(int(length)).decode("utf-8")
@@ -227,7 +227,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if "userID" not in self.session:
             self.handle401()
             return
-            
+
         parts = self.path.split("/")
         nameID = parts[-1]
         length = self.headers["Content-Length"]
@@ -255,7 +255,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if "userID" not in self.session:
             self.handle401()
             return
-            
+
         # send_response(status code, )
         self.send_response(200)
         # send the header data send_header(key, value)
@@ -271,7 +271,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         if "userID" not in self.session:
             self.handle401()
             return
-            
+
         #print(self.path)
         parts = self.path.split("/")
         nameID = parts[-1]
