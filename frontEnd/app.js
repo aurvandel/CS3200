@@ -5,19 +5,12 @@ var girlNames = [];
 var favGirlNames = [];
 var userInfo;
 
-
-
-// query tags for placing HTML
-var boyPick = document.querySelector("#boyName");
-var girlPick = document.querySelector("#girlName");
-
-// Get the list of favorite boy names
+// Get the list of favorite boy names used in multiple functions
 var boyNameDataModal = document.querySelector("#boyNameData");
 var boyNameDataDiv = document.querySelector("#boyNameDataSpan");
-// Get the list of favorite girl names
+// Get the list of favorite girl names used in multiple functions
 var girlNameDataModal = document.querySelector("#girlNameData");
 var girlNameDataDiv = document.querySelector("#girlNameDataSpan");
-
 
 // Function declerations
 
@@ -493,9 +486,9 @@ cancelRegBtn.onclick = function () {
 var boyButton = document.querySelector("#boyButton");
 boyButton.onclick = function () {
   var randomBoy = Math.floor(Math.random() * boyNames.length)
+  var boyPick = document.querySelector("#boyName");
   boyPick.innerHTML = boyNames[randomBoy].name;
   var path = "http://localhost:8080/favBoyNames/" + boyNames[randomBoy].id;
-
   //hover listener for name
   boyPick.addEventListener("click", function (item) {
     mouseOverListener(boyNames[randomBoy].name, item, boyNameDataModal,
@@ -524,6 +517,7 @@ boyButton.onclick = function () {
 var girlButton = document.querySelector("#girlButton");
 girlButton.onclick = function () {
     var randomGirl = Math.floor(Math.random() * girlNames.length)
+    var girlPick = document.querySelector("#girlName");
     girlPick.innerHTML = girlNames[randomGirl].name;
 
     var path = "http://localhost:8080/favGirlNames/" + girlNames[randomGirl].id;
