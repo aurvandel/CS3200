@@ -264,6 +264,7 @@ function closeModals () {
   document.querySelector(".loginModal").style.display = "none";
 };
 
+// deletes the requested name
 function deleteName(path) {
   fetch(path, {
     method: "DELETE",
