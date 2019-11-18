@@ -84,6 +84,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         elif self.path.startswith("/favGirlNames/"):
             self.handleNamesRetrieveMember()
 
+        elif self.path == "/sessions":
+            self.handleCheckSession()
+
         else:
             self.send404()
 
@@ -94,9 +97,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         elif self.path.startswith("/favGirlNames/"):
             self.handleUpdateName()
-
-        elif self.path == "/sessions":
-            self.handleCheckSession()
 
         else:
             self.send404()
@@ -149,7 +149,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.handle401()
             return
 
-        # TODO: get user data and pass to client
         db = NamesDB()
         user = db.getOneUserByID(self.session["userID"])
         if user != None:

@@ -447,7 +447,7 @@ loginBtn.onclick = function (){
 // runs at page load to check if user is already logged in
 function checkSession () {
   fetch("http://localhost:8080/sessions", {
-    method: "PUT",
+    method: "GET",
     credentials: "include"}).then(function (response) {
       var loginModal = document.querySelector(".loginModal");
       if (response.status == 200) {
